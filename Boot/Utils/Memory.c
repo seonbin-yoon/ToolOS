@@ -1,3 +1,14 @@
+/*
+ * SPDX-License-Identifier: GPL-2.0-only
+ *
+ * Copyright (c) 2026 Seonbin Yoon
+ * Project: ToolOS
+ * File: Memory.c
+ * Description:
+ *   It provides a function to load a custom memory map. Internally, it calls the GetMemoryMap function, 
+ *   records the address in the BootInfo table provided by the caller, and then returns.
+ */
+
 #include "TBL.h"
 #define CPU_HALT __asm__ __volatile__ ("cli; hlt")
 

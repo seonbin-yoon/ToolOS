@@ -1,3 +1,13 @@
+/*
+ * SPDX-License-Identifier: GPL-2.0-only
+ *
+ * Copyright (c) 2026 Seonbin Yoon
+ * Project: ToolOS
+ * File: InfoTable.c
+ * Description:
+ *   Creates and returns a structure that the kernel can read.
+ */
+
 #include "TBL.h"
 #define CPU_HALT __asm__ __volatile__ ("cli; hlt")
 

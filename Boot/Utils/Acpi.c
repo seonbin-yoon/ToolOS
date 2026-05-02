@@ -1,3 +1,14 @@
+/*
+ * SPDX-License-Identifier: GPL-2.0-only
+ *
+ * Copyright (c) 2026 Seonbin Yoon
+ * Project: ToolOS
+ * File: Acpi.c
+ * Description:
+ *   Checks each system table to determine if it is an ACPI table; if no tables are found,
+ *   it immediately handles the exception, and if one is found, it records the address in InfoTable.
+ */
+
 #include "TBL.h"
 
 #define ACPI_GUID gEfiAcpi20TableGuid

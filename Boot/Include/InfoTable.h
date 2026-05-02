@@ -1,13 +1,12 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- * Copyright (c) 2026, "뿌댕이"
+/*
+ * SPDX-License-Identifier: GPL-2.0-only
+ *
+ * Copyright (c) 2026 Seonbin Yoon
  * Project: ToolOS
- * File: BootSpec.h
- * * Description:
- * ToolOS BootLoader structure
- * 
-*/
+ * File: InfoTable.c
+ * Description:
+ *   Where the structure that the kernel reads is defined
+ */
 
 #ifndef InfoTable_h
 #define InfoTable_h

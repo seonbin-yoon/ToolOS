@@ -1,12 +1,11 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/. 
- * Copyright (c) 2026, "뿌댕이"
+/*
+ * SPDX-License-Identifier: GPL-2.0-only
+ *
+ * Copyright (c) 2026 Seonbin Yoon
  * Project: ToolOS
- * File: ToolOSBootLoader.c
- * Version : 0.1.1
- * * Description:
- * 
+ * File: BootLoader.c
+ * Description: 
+ *   This is the main bootloader for ToolOS
  */
 
 #include "TBL.h"

@@ -1,3 +1,13 @@
+/*
+ * SPDX-License-Identifier: GPL-2.0-only
+ *
+ * Copyright (c) 2026 Seonbin Yoon
+ * Project: ToolOS
+ * File: TBL.h
+ * Description:
+ *   The function definitions for all utility C files are located here.
+ */
+
 #ifndef TBL_H
 #define TBL_H
 

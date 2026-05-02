@@ -1,3 +1,13 @@
+/*
+ * SPDX-License-Identifier: GPL-2.0-only
+ *
+ * Copyright (c) 2026 Seonbin Yoon
+ * Project: ToolOS
+ * File: ELF.h
+ * Description:
+ *   Where the standard ELF header is defined
+ */
+
 #ifndef ELF_H
 #define ELF_H
 

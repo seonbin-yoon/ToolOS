@@ -1,3 +1,13 @@
+/*
+ * SPDX-License-Identifier: GPL-2.0-only
+ *
+ * Copyright (c) 2026 Seonbin Yoon
+ * Project: ToolOS
+ * File: GraphicsOutProtocol.c
+ * Description:
+ *   Retrieving GOP information.
+ */
+
 #include "TBL.h"
 
 #define GOP_GUID gEfiGraphicsOutputProtocolGuid
