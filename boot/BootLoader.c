@@ -11,12 +11,12 @@
 #include "TBL.h"
 
 EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE * SystemTable) {
-	SystemTable->ConOut->ClearScreen(SystemTable->ConOut);
-
 	EFI_STATUS Status;
 	TOOLOS_MASTER_MAP *BootInfo = NULL;
 	EFI_FILE_PROTOCOL *KernelFile = NULL;
 	/* GoToKernel JumpToKernel; */
+
+	SystemTable->ConOut->ClearScreen(SystemTable->ConOut);
 
 	Status = Create_InfoTable(&BootInfo);
 	if (EFI_ERROR(Status)) {
