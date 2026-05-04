@@ -15,20 +15,18 @@ void* Last_MemoryMapAddress = NULL;
 void* Last_ToolOSMemoryMapAddress = NULL;
 
 EFI_STATUS Get_EFI_MemoryMap(IN TOOLOS_MASTER_MAP* BootInfo) {
-	if (CompareMem(BootInfo->Signature, TOOLOS_INFOTABLE_Signature, 16) != 0) {
-		return EFI_INVALID_PARAMETER;
-	}
-
 	EFI_STATUS Status;
-
 	UINTN MemoryMapSize = 0;
 	EFI_MEMORY_DESCRIPTOR* MemoryMap = NULL;
 	UINTN MapKey = 0;
 	UINTN DescriptorSize = 0;
 	UINT32 DescriptorVersion = 0;
-	
 	UINTN TOOLOS_MemoryMapSize;
 	EFI_MEMORY_DESCRIPTOR* MPTR;
+
+	if (CompareMem(BootInfo->Signature, TOOLOS_INFOTABLE_Signature, 16) != 0) {
+		return EFI_INVALID_PARAMETER;
+	}
 
 	if (Last_MemoryMapAddress || Last_ToolOSMemoryMapAddress) {
 		gBS->FreePool(Last_MemoryMapAddress);
