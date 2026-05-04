@@ -10,17 +10,15 @@
 
 #include "TBL.h"
 
-#define GOP_GUID gEfiGraphicsOutputProtocolGuid
-
 EFI_STATUS Get_GOP_Info(IN TOOLOS_MASTER_MAP* BootInfo) {
-	if (CompareMem(BootInfo->Signature, TOOLOS_INFOTABLE_Signature, 16) != 0)
-		return EFI_INVALID_PARAMETER;
-	
 	EFI_STATUS Status;
 	EFI_GRAPHICS_OUTPUT_PROTOCOL* GOP = NULL;
 	
+	if (CompareMem(BootInfo->Signature, TOOLOS_INFOTABLE_Signature, 16) != 0)
+		return EFI_INVALID_PARAMETER;
+
 	Status = gBS->LocateProtocol(
-		&GOP_GUID,
+		&gEfiGraphicsOutputProtocolGuid,
 		NULL,
 		(VOID **)&GOP
 	);
