@@ -10,6 +10,52 @@
 
 #include "TBL.h"
 
-#define LOADIMAGE_GUID gEfiLoadedImageProtocolGuid
-#define FileSystem_GUID gEfiSimpleFileSystemProtocolGuid
-#define _1MB 1048576
+EFI_STATUS OpenKernelFile(IN EFI_HANDLE BootLoaderHandle, IN CHAR16 *FileName, IN OUT EFI_FILE_PROTOCOL **File) {
+    EFI_STATUS Status;
+    EFI_LOADED_IMAGE *BootLoaderInfo = NULL;
+    EFI_SIMPLE_FILE_SYSTEM_PROTOCOL *FileSystem = NULL;
+    EFI_FILE_PROTOCOL *Root = NULL;
+
+    if (BootLoaderHandle == NULL || FileName == NULL || File == NULL) {
+        Status = EFI_INVALID_PARAMETER;
+        goto out;
+    }
+
+    *File = NULL;
+
+    Status = gBS->HandleProtocol(
+        BootLoaderHandle,
+        &gEfiLoadedImageProtocolGuid,
+        (VOID **)&BootLoaderInfo
+    );
+    if (EFI_ERROR(Status))
+        goto out;
+
+    Status = gBS->HandleProtocol(
+        BootLoaderInfo->DeviceHandle,
+        &gEfiSimpleFileSystemProtocolGuid,
+        (VOID **)&FileSystem
+    );
+    if (EFI_ERROR(Status))
+        goto out;
+
+    Status = FileSystem->OpenVolume(
+        FileSystem,
+        &Root
+    );
+    if (EFI_ERROR(Status))
+        goto out;
+
+    Status = Root->Open(
+        Root,
+        File,
+        FileName,
+        EFI_FILE_MODE_READ,
+        0
+    );
+
+out_close_root:
+    Root->Close(Root);
+out:
+    return Status;
+}
