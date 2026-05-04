@@ -10,7 +10,7 @@
 
 #include "TBL.h"
 
-EFI_STATUS EFIAPI BootMain(EFI_HANDLE ThisHandle, EFI_SYSTEM_TABLE * SystemTable) {
+EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE * SystemTable) {
 	SystemTable->ConOut->ClearScreen(SystemTable->ConOut);
 
 	EFI_STATUS Status;
@@ -34,16 +34,6 @@ EFI_STATUS EFIAPI BootMain(EFI_HANDLE ThisHandle, EFI_SYSTEM_TABLE * SystemTable
 		Print(L"Failed Get GOP Info. | Error code: %r", Status);
 		CPU_HALT;
 	}
-
-	UINT32 *Pointer = (UINT32 *)BootInfo->T_GraphicsMap.FrameBufferBase;
-
-	for (UINTN i = 0; i < BootInfo->T_GraphicsMap.PixelsPerScanLine * 5; i++) {
-		Pointer[i] = 0x7F;
-	}
-
-	Print(L"ACPI RSDP : %p, Frame Buffer : %p\r\nGreat!\r\n", BootInfo->T_ACPITable, BootInfo->T_GraphicsMap.FrameBufferBase);
-	Print(L"The system will halt now!\r\n");
-	CPU_HALT;
 
 	return EFI_SUCCESS;
 }
