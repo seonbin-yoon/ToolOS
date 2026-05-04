@@ -15,6 +15,7 @@ EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE * SystemTabl
 
 	EFI_STATUS Status;
 	TOOLOS_MASTER_MAP *BootInfo = NULL;
+	EFI_FILE_PROTOCOL *KernelFile = NULL;
 	/* GoToKernel JumpToKernel; */
 
 	Status = Create_InfoTable(&BootInfo);
@@ -35,5 +36,11 @@ EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE * SystemTabl
 		CPU_HALT;
 	}
 
+	Status = OpenKernelFile(ImageHandle, L"TOSKernel.elf", &KernelFile);
+	if (EFI_ERROR(Status)) {
+		Print(L"Failed Open to Kernel File. | Error code: %r", Status);
+		CPU_HALT;
+	}
+
 	return EFI_SUCCESS;
-}
+}	
