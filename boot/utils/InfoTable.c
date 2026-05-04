@@ -13,12 +13,12 @@
 const CHAR8 TOOLOS_INFOTABLE_Signature[16] = {"TOOLOS BOOTINFO"};
 
 EFI_STATUS Create_InfoTable(IN OUT TOOLOS_MASTER_MAP **Table_Pointer) {
-	if (Table_Pointer == NULL)
-		return EFI_INVALID_PARAMETER;
-	
 	EFI_STATUS Status;
 	UINT64 TableSize = sizeof(TOOLOS_MASTER_MAP);
 	TOOLOS_MASTER_MAP *TempTable = NULL;
+
+	if (Table_Pointer == NULL)
+		return EFI_INVALID_PARAMETER;
 
 	Status = gBS->AllocatePool(
 		EfiLoaderData,
