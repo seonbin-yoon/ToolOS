@@ -11,8 +11,6 @@
 
 #include "TBL.h"
 
-#define ACPI_GUID gEfiAcpi20TableGuid
-
 const CHAR8 ACPI_TABLE_Signature[8] = {'R', 'S', 'D', ' ', 'P', 'T', 'R', ' '};
 
 EFI_STATUS Get_ACPI_Info(IN TOOLOS_MASTER_MAP *BootInfo) {
@@ -20,7 +18,7 @@ EFI_STATUS Get_ACPI_Info(IN TOOLOS_MASTER_MAP *BootInfo) {
 		return EFI_INVALID_PARAMETER;
 
 	for (UINTN i = 0; i < gST->NumberOfTableEntries; i++) {
-		if (CompareGuid(&gST->ConfigurationTable[i].VendorGuid, &ACPI_GUID)) {
+		if (CompareGuid(&gST->ConfigurationTable[i].VendorGuid, &gEfiAcpi20TableGuid)) {
 			BootInfo->T_ACPITable = (TOOLOS_ACPI_XSDT_TABLE *)gST->ConfigurationTable[i].VendorTable;
 			return EFI_SUCCESS;
 		}
