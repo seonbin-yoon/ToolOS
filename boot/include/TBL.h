@@ -52,6 +52,11 @@ EFI_STATUS
 	IN OUT EFI_FILE_PROTOCOL **File
 );
 
+EFI_STATUS
+(GetFileSize)(
+	IN EFI_FILE_PROTOCOL **File
+);
+
 extern const CHAR8 TOOLOS_INFOTABLE_Signature[16];
 
 #endif
