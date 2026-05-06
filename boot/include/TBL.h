@@ -45,6 +45,13 @@ EFI_STATUS
 	IN TOOLOS_MASTER_MAP *BootInfo
 );
 
+EFI_STATUS
+(OpenKernelFile)(
+	IN EFI_HANDLE BootLoaderHandle,
+	IN CHAR16 *FileName,
+	IN OUT EFI_FILE_PROTOCOL **File
+);
+
 extern const CHAR8 TOOLOS_INFOTABLE_Signature[16];
 
 #endif
