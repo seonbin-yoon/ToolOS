@@ -44,7 +44,7 @@ EFI_STATUS OpenKernelFile(IN EFI_HANDLE BootLoaderHandle, IN CHAR16 *FileName, I
         &Root
     );
     if (EFI_ERROR(Status))
-        goto out;
+        goto out_close_root;
 
     Status = Root->Open(
         Root,
@@ -55,7 +55,8 @@ EFI_STATUS OpenKernelFile(IN EFI_HANDLE BootLoaderHandle, IN CHAR16 *FileName, I
     );
 
 out_close_root:
-    Root->Close(Root);
+    if (Root)
+        Root->Close(Root);
 out:
     return Status;
 }
