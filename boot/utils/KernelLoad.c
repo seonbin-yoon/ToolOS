@@ -9,54 +9,90 @@
  */
 
 #include "TBL.h"
+#define ELF_MAGIC_NUM 0x464C457F
 
 EFI_STATUS OpenKernelFile(IN EFI_HANDLE BootLoaderHandle, IN CHAR16 *FileName, IN OUT EFI_FILE_PROTOCOL **File) {
-    EFI_STATUS Status;
-    EFI_LOADED_IMAGE *BootLoaderInfo = NULL;
-    EFI_SIMPLE_FILE_SYSTEM_PROTOCOL *FileSystem = NULL;
-    EFI_FILE_PROTOCOL *Root = NULL;
+	EFI_STATUS Status;
+	EFI_LOADED_IMAGE *BootLoaderInfo = NULL;
+	EFI_SIMPLE_FILE_SYSTEM_PROTOCOL *FileSystem = NULL;
+	EFI_FILE_PROTOCOL *Root = NULL;
 
-    if (BootLoaderHandle == NULL || FileName == NULL || File == NULL) {
-        Status = EFI_INVALID_PARAMETER;
-        goto out;
-    }
+	if (BootLoaderHandle == NULL || FileName == NULL || File == NULL) {
+		Status = EFI_INVALID_PARAMETER;
+		goto out;
+	}
 
-    *File = NULL;
+	*File = NULL;
 
-    Status = gBS->HandleProtocol(
-        BootLoaderHandle,
-        &gEfiLoadedImageProtocolGuid,
-        (VOID **)&BootLoaderInfo
-    );
-    if (EFI_ERROR(Status))
-        goto out;
+	Status = gBS->HandleProtocol(
+		BootLoaderHandle,
+		&gEfiLoadedImageProtocolGuid,
+		(VOID **)&BootLoaderInfo
+	);
+	if (EFI_ERROR(Status))
+		goto out;
 
-    Status = gBS->HandleProtocol(
-        BootLoaderInfo->DeviceHandle,
-        &gEfiSimpleFileSystemProtocolGuid,
-        (VOID **)&FileSystem
-    );
-    if (EFI_ERROR(Status))
-        goto out;
+	Status = gBS->HandleProtocol(
+		BootLoaderInfo->DeviceHandle,
+		&gEfiSimpleFileSystemProtocolGuid,
+		(VOID **)&FileSystem
+	);
+	if (EFI_ERROR(Status))
+		goto out;
 
-    Status = FileSystem->OpenVolume(
-        FileSystem,
-        &Root
-    );
-    if (EFI_ERROR(Status))
-        goto out_close_root;
+	Status = FileSystem->OpenVolume(
+		FileSystem,
+		&Root
+	);
+	if (EFI_ERROR(Status))
+		goto out_close_root;
 
-    Status = Root->Open(
-        Root,
-        File,
-        FileName,
-        EFI_FILE_MODE_READ,
-        0
-    );
+	Status = Root->Open(
+		Root,
+		File,
+		FileName,
+		EFI_FILE_MODE_READ,
+		0
+	);
 
 out_close_root:
-    if (Root)
-        Root->Close(Root);
+	if (Root)
+		Root->Close(Root);
 out:
-    return Status;
+	return Status;
+}
+
+/* TODO: Renaming Functions and Clarifying Their Roles */
+EFI_STATUS GetFileSize(IN EFI_FILE_PROTOCOL *File) {
+	EFI_STATUS Status;
+
+	ELFHeader EhdrReader;
+	ELFProgramHeader *EphdrReader;
+
+	UINT64 Ehdrsize = sizeof(ELFHeader);
+
+	if (File == NULL) {
+		return EFI_INVALID_PARAMETER;
+	}
+
+	Status = File->Read(
+		File,
+		&Ehdrsize,
+		&EhdrReader
+	);
+	if (EFI_ERROR(Status))
+		goto out;
+
+	if (*(UINT32 *)EhdrReader.e_ident != ELF_MAGIC_NUM) {
+		Status = EFI_UNSUPPORTED;
+		goto out;
+	}
+
+	if (EhdrReader.e_ident[4] != 2 || EhdrReader.e_ident[5] != 1) {
+		Status = EFI_UNSUPPORTED;
+		goto out;
+	}
+
+out:
+	return Status;
 }
