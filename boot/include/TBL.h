@@ -53,8 +53,15 @@ EFI_STATUS
 );
 
 EFI_STATUS
+(ValidationELFHeader)(
+	IN EFI_FILE_PROTOCOL *File,
+	IN BOOLEAN Is64bit,
+	IN BOOLEAN IsBigEndian
+);
+
+EFI_STATUS
 (GetFileSize)(
-	IN EFI_FILE_PROTOCOL **File
+	IN EFI_FILE_PROTOCOL *File
 );
 
 extern const CHAR8 TOOLOS_INFOTABLE_Signature[16];
