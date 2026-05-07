@@ -62,13 +62,9 @@ out:
 	return Status;
 }
 
-/* TODO: Renaming Functions and Clarifying Their Roles */
-EFI_STATUS GetFileSize(IN EFI_FILE_PROTOCOL *File) {
+EFI_STATUS ValidationELFHeader(IN EFI_FILE_PROTOCOL *File, IN BOOLEAN Is64bit, IN BOOLEAN IsBigEndian) {
 	EFI_STATUS Status;
-
 	ELFHeader EhdrReader;
-	ELFProgramHeader *EphdrReader;
-
 	UINT64 Ehdrsize = sizeof(ELFHeader);
 
 	if (File == NULL) {
@@ -88,10 +84,12 @@ EFI_STATUS GetFileSize(IN EFI_FILE_PROTOCOL *File) {
 		goto out;
 	}
 
-	if (EhdrReader.e_ident[4] != 2 || EhdrReader.e_ident[5] != 1) {
+	if (EhdrReader.e_ident[4] != (Is64bit + 1) || EhdrReader.e_ident[5] != (IsBigEndian + 1)) {
 		Status = EFI_UNSUPPORTED;
 		goto out;
-	}
+	} 
+
+	Status = EFI_SUCCESS;
 
 out:
 	return Status;
