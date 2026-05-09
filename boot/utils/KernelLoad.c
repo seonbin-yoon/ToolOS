@@ -10,6 +10,7 @@
 
 #include "TBL.h"
 #define ELF_MAGIC_NUM 0x464C457F
+#define PT_LOAD 1
 
 EFI_STATUS OpenKernelFile(IN EFI_HANDLE BootLoaderHandle, IN CHAR16 *FileName, IN OUT EFI_FILE_PROTOCOL **File) {
 	EFI_STATUS Status;
@@ -95,3 +96,86 @@ rollback_out:
 out:
 	return Status;
 }
+
+EFI_STATUS GetKernelFileSize(EFI_FILE_PROTOCOL *File, UINT64 *SizeBuffer) {
+	EFI_STATUS Status;
+	
+	ELFHeader EhdrReader;
+	ELFProgramHeader *EphdrReader = NULL;
+
+	UINTN EhdrSize = sizeof(ELFHeader);
+	VOID *TotalPhdr = NULL;
+	UINTN TotalPhdrSize = 0;
+
+	UINT64 MinSegAddr = -1;
+	UINT64 MaxSegAddr = 0;
+
+	if (File == NULL || SizeBuffer == NULL) {
+		Status = EFI_INVALID_PARAMETER;
+		goto out;
+	}
+
+	Status = File->Read(
+		File,
+		&EhdrSize,
+		&EhdrReader
+	);
+	if (EFI_ERROR(Status))
+		goto rollback_out;
+
+	TotalPhdrSize = EhdrReader.e_phnum * EhdrReader.e_phentsize;
+	Status = gBS->AllocatePool(
+		EfiLoaderData,
+		TotalPhdrSize,
+		&TotalPhdr
+	);
+	if (EFI_ERROR(Status))
+		goto rollback_out;
+
+	Status = File->SetPosition(
+		File,
+		EhdrReader.e_phoff
+	);
+	if (EFI_ERROR(Status))
+		goto free_phdrbuffer_out;
+
+	Status = File->Read(
+		File,
+		&TotalPhdrSize,
+		&TotalPhdr
+	);
+	if (EFI_ERROR(Status))
+		goto free_phdrbuffer_out;
+
+	EphdrReader = TotalPhdr;
+	for (UINT64 i = 0; i < EhdrReader.e_phnum; i++) {
+		if (EphdrReader[i].p_type == PT_LOAD) {
+			if (EphdrReader[i].p_vaddr < MinSegAddr)
+				MinSegAddr = EphdrReader[i].p_vaddr;
+			if ((EphdrReader[i].p_vaddr + EphdrReader[i].p_memsz) > MaxSegAddr)
+				MaxSegAddr = EphdrReader[i].p_vaddr + EphdrReader[i].p_memsz;
+		}
+	}
+
+	if (MaxSegAddr < MinSegAddr) {
+		Status = EFI_LOAD_ERROR;
+		Print(L"Min : %lx, Max : %lx\r\n", MinSegAddr, MaxSegAddr);
+		goto free_phdrbuffer_out;
+	}
+
+	*SizeBuffer = MaxSegAddr - MinSegAddr;
+
+free_phdrbuffer_out:
+	gBS->FreePool(TotalPhdr);
+rollback_out:
+	File->SetPosition(File, 0);
+out:
+	return Status;
+}
+
+EFI_STATUS CloseKernelFile(EFI_FILE_PROTOCOL *File) {
+	EFI_STATUS Status;
+
+	Status = File->Close(File);
+	return Status;
+} 
