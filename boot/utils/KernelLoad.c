@@ -62,13 +62,14 @@ out:
 	return Status;
 }
 
-EFI_STATUS ValidationELFHeader(IN EFI_FILE_PROTOCOL *File, IN BOOLEAN Is64bit, IN BOOLEAN IsBigEndian) {
+EFI_STATUS ValidationELFHeader(IN EFI_FILE_PROTOCOL *File, IN BOOLEAN IsBigEndian) {
 	EFI_STATUS Status;
 	ELFHeader EhdrReader;
 	UINT64 Ehdrsize = sizeof(ELFHeader);
 
 	if (File == NULL) {
-		return EFI_INVALID_PARAMETER;
+		Status = EFI_INVALID_PARAMETER;
+		goto out;
 	}
 
 	Status = File->Read(
@@ -77,20 +78,20 @@ EFI_STATUS ValidationELFHeader(IN EFI_FILE_PROTOCOL *File, IN BOOLEAN Is64bit, I
 		&EhdrReader
 	);
 	if (EFI_ERROR(Status))
-		goto out;
+		goto rollback_out;
 
 	if (*(UINT32 *)EhdrReader.e_ident != ELF_MAGIC_NUM) {
 		Status = EFI_UNSUPPORTED;
-		goto out;
+		goto rollback_out;
 	}
 
-	if (EhdrReader.e_ident[4] != (Is64bit + 1) || EhdrReader.e_ident[5] != (IsBigEndian + 1)) {
+	if (EhdrReader.e_ident[4] != 2 || EhdrReader.e_ident[5] != (IsBigEndian + 1)) {
 		Status = EFI_UNSUPPORTED;
-		goto out;
-	} 
+		goto rollback_out;
+	}
 
-	Status = EFI_SUCCESS;
-
+rollback_out:
+	File->SetPosition(File, 0);
 out:
 	return Status;
 }
