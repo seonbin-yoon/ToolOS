@@ -13,16 +13,24 @@
 
 const CHAR8 ACPI_TABLE_Signature[8] = {'R', 'S', 'D', ' ', 'P', 'T', 'R', ' '};
 
-EFI_STATUS Get_ACPI_Info(IN TOOLOS_MASTER_MAP *BootInfo) {
-	if (CompareMem(BootInfo->Signature, TOOLOS_INFOTABLE_Signature, 16) != 0)
-		return EFI_INVALID_PARAMETER;
+EFI_STATUS GetACPIInfo(IN TOOLOS_MASTER_MAP *BootInfo) {
+	EFI_STATUS Status;
+
+	if (BootInfo == NULL || CompareMem(BootInfo->Signature, TOOLOS_INFOTABLE_Signature, 16) != 0) {
+		Status = EFI_INVALID_PARAMETER;
+		goto out;
+	}
 
 	for (UINTN i = 0; i < gST->NumberOfTableEntries; i++) {
 		if (CompareGuid(&gST->ConfigurationTable[i].VendorGuid, &gEfiAcpi20TableGuid)) {
 			BootInfo->T_ACPITable = (TOOLOS_ACPI_XSDT_TABLE *)gST->ConfigurationTable[i].VendorTable;
-			return EFI_SUCCESS;
+			Status = EFI_SUCCESS;
+			goto out;
 		}
 	}
 
-	return EFI_NOT_FOUND;
+	Status = EFI_NOT_FOUND;
+
+out:
+	return Status;
 }
