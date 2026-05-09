@@ -14,8 +14,10 @@ EFI_STATUS Get_GOP_Info(IN TOOLOS_MASTER_MAP* BootInfo) {
 	EFI_STATUS Status;
 	EFI_GRAPHICS_OUTPUT_PROTOCOL* GOP = NULL;
 	
-	if (CompareMem(BootInfo->Signature, TOOLOS_INFOTABLE_Signature, 16) != 0)
-		return EFI_INVALID_PARAMETER;
+	if (BootInfo == NULL || CompareMem(BootInfo->Signature, TOOLOS_INFOTABLE_Signature, 16) != 0) {
+		Status = EFI_INVALID_PARAMETER;
+		goto out;
+	}
 
 	Status = gBS->LocateProtocol(
 		&gEfiGraphicsOutputProtocolGuid,
@@ -24,7 +26,7 @@ EFI_STATUS Get_GOP_Info(IN TOOLOS_MASTER_MAP* BootInfo) {
 	);
 
 	if (EFI_ERROR(Status))
-		return Status;
+		goto out;
 
 	BootInfo->T_GraphicsMap.FrameBufferBase                = GOP->Mode->FrameBufferBase;
 	BootInfo->T_GraphicsMap.FrameBufferSize                = GOP->Mode->FrameBufferSize;
@@ -37,5 +39,6 @@ EFI_STATUS Get_GOP_Info(IN TOOLOS_MASTER_MAP* BootInfo) {
 	BootInfo->T_GraphicsMap.PixelsPerScanLine              = GOP->Mode->Info->PixelsPerScanLine;
 	BootInfo->T_GraphicsMap.Version                        = GOP->Mode->Info->Version;
 
-	return EFI_SUCCESS;
+out:
+	return Status;
 }
