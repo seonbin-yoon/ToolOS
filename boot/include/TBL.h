@@ -58,6 +58,17 @@ EFI_STATUS
 	IN BOOLEAN IsBigEndian
 );
 
+EFI_STATUS
+(GetKernelFileSize)(
+	EFI_FILE_PROTOCOL *File,
+	UINT64 *SizeBuffer
+);
+
+EFI_STATUS
+(CloseKernelFile)(
+	EFI_FILE_PROTOCOL *File
+);
+
 extern const CHAR8 TOOLOS_INFOTABLE_Signature[16];
 
 #endif
