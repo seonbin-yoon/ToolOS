@@ -21,11 +21,12 @@ EFI_STATUS Get_EFI_MemoryMap(IN TOOLOS_MASTER_MAP* BootInfo) {
 	UINTN MapKey = 0;
 	UINTN DescriptorSize = 0;
 	UINT32 DescriptorVersion = 0;
-	UINTN TOOLOS_MemoryMapSize;
+	UINTN TOOLOSMemoryMapSize;
 	EFI_MEMORY_DESCRIPTOR* MPTR;
 
-	if (CompareMem(BootInfo->Signature, TOOLOS_INFOTABLE_Signature, 16) != 0) {
-		return EFI_INVALID_PARAMETER;
+	if (BootInfo == NULL || CompareMem(BootInfo->Signature, TOOLOS_INFOTABLE_Signature, 16) != 0) {
+		Status = EFI_INVALID_PARAMETER;
+		goto out;
 	}
 
 	if (Last_MemoryMapAddress || Last_ToolOSMemoryMapAddress) {
@@ -44,21 +45,21 @@ EFI_STATUS Get_EFI_MemoryMap(IN TOOLOS_MASTER_MAP* BootInfo) {
 	);
 
 	if (Status != EFI_BUFFER_TOO_SMALL) {
-		return Status;
+		goto out;
 	}
 
 	MemoryMapSize += DescriptorSize * 3;
 	BootInfo->T_MemoryMapInfo.MemoryMapNums = MemoryMapSize / DescriptorSize;
-	TOOLOS_MemoryMapSize = sizeof(TOOLOS_MEMORY_MAP) * BootInfo->T_MemoryMapInfo.MemoryMapNums;
+	TOOLOSMemoryMapSize = sizeof(TOOLOS_MEMORY_MAP) * BootInfo->T_MemoryMapInfo.MemoryMapNums;
 
 	Status = gBS->AllocatePool(
 		EfiLoaderData,
-		TOOLOS_MemoryMapSize,
+		TOOLOSMemoryMapSize,
 		(VOID **)&BootInfo->T_MemoryMap
 	);
 
 	if (EFI_ERROR(Status)) {
-		return Status;
+		goto out;
 	}
 
 	Status = gBS->AllocatePool(
@@ -68,7 +69,7 @@ EFI_STATUS Get_EFI_MemoryMap(IN TOOLOS_MASTER_MAP* BootInfo) {
 	);
 
 	if (EFI_ERROR(Status)) {
-		return Status;
+		goto out;
 	}
 
 	Status = gBS->GetMemoryMap(
@@ -80,12 +81,12 @@ EFI_STATUS Get_EFI_MemoryMap(IN TOOLOS_MASTER_MAP* BootInfo) {
 	);
 	
 	if (EFI_ERROR(Status)) {
-		return Status;
+		goto out;
 	}
 
 	MPTR = MemoryMap;
 	if (BootInfo->T_MemoryMapInfo.MemoryMapNums < MemoryMapSize / DescriptorSize) {
-		return Status;
+		goto out;
 	}
 
 	BootInfo->T_MemoryMapInfo.MemoryMapNums = MemoryMapSize / DescriptorSize;
@@ -103,5 +104,6 @@ EFI_STATUS Get_EFI_MemoryMap(IN TOOLOS_MASTER_MAP* BootInfo) {
 	Last_MemoryMapAddress = MemoryMap;
 	Last_ToolOSMemoryMapAddress = BootInfo->T_MemoryMap;
 
-	return EFI_SUCCESS;
+out:
+	return Status;
 }
