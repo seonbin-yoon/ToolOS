@@ -31,7 +31,7 @@ EFI_STATUS
 );
 
 EFI_STATUS
-(Get_EFI_MemoryMap)(
+(GetMemoryInfo)(
 	IN TOOLOS_MASTER_MAP *BootInfo
 );
 
