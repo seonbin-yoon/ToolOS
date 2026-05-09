@@ -17,17 +17,18 @@ EFI_STATUS Create_InfoTable(IN OUT TOOLOS_MASTER_MAP **Table_Pointer) {
 	UINT64 TableSize = sizeof(TOOLOS_MASTER_MAP);
 	TOOLOS_MASTER_MAP *TempTable = NULL;
 
-	if (Table_Pointer == NULL)
-		return EFI_INVALID_PARAMETER;
+	if (Table_Pointer == NULL) {
+		Status = EFI_INVALID_PARAMETER;
+		goto out;
+	}
 
 	Status = gBS->AllocatePool(
 		EfiLoaderData,
 		TableSize,
 		(VOID **)&TempTable
 	);
-
 	if (EFI_ERROR(Status))
-		return Status;
+		goto out;
 
 	gBS->SetMem(
 		TempTable,
@@ -40,5 +41,6 @@ EFI_STATUS Create_InfoTable(IN OUT TOOLOS_MASTER_MAP **Table_Pointer) {
 
 	*Table_Pointer = TempTable;
 
-	return EFI_SUCCESS;
+out:
+	return Status;
 }
