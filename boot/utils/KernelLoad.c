@@ -66,7 +66,8 @@ out:
 EFI_STATUS ValidationELFHeader(IN EFI_FILE_PROTOCOL *File, IN BOOLEAN IsBigEndian) {
 	EFI_STATUS Status;
 	ELFHeader EhdrReader;
-	UINT64 Ehdrsize = sizeof(ELFHeader);
+	UINTN EhdrSize = sizeof(ELFHeader);
+	UINT64 EphdrSize = sizeof(ELFProgramHeader);
 
 	if (File == NULL) {
 		Status = EFI_INVALID_PARAMETER;
@@ -75,7 +76,7 @@ EFI_STATUS ValidationELFHeader(IN EFI_FILE_PROTOCOL *File, IN BOOLEAN IsBigEndia
 
 	Status = File->Read(
 		File,
-		&Ehdrsize,
+		&EhdrSize,
 		&EhdrReader
 	);
 	if (EFI_ERROR(Status))
@@ -87,6 +88,11 @@ EFI_STATUS ValidationELFHeader(IN EFI_FILE_PROTOCOL *File, IN BOOLEAN IsBigEndia
 	}
 
 	if (EhdrReader.e_ident[4] != 2 || EhdrReader.e_ident[5] != (IsBigEndian + 1)) {
+		Status = EFI_UNSUPPORTED;
+		goto rollback_out;
+	}
+
+	if (EhdrReader.e_phentsize != EphdrSize) {
 		Status = EFI_UNSUPPORTED;
 		goto rollback_out;
 	}
