@@ -148,7 +148,7 @@ EFI_STATUS GetKernelFileSize(EFI_FILE_PROTOCOL *File, UINT64 *SizeBuffer) {
 	Status = File->Read(
 		File,
 		&TotalPhdrSize,
-		&TotalPhdr
+		TotalPhdr
 	);
 	if (EFI_ERROR(Status))
 		goto free_phdrbuffer_out;
@@ -170,6 +170,115 @@ EFI_STATUS GetKernelFileSize(EFI_FILE_PROTOCOL *File, UINT64 *SizeBuffer) {
 	}
 
 	*SizeBuffer = MaxSegAddr - MinSegAddr;
+
+free_phdrbuffer_out:
+	gBS->FreePool(TotalPhdr);
+rollback_out:
+	File->SetPosition(File, 0);
+out:
+	return Status;
+}
+
+EFI_STATUS LoadKernelFile(TOOLOS_MASTER_MAP *BootInfo, EFI_FILE_PROTOCOL *File, EFI_PHYSICAL_ADDRESS LoadAddress, UINT64 Size) {
+	EFI_STATUS Status;
+	UINT64 NeedPages = 0;
+	UINT64 NeedSize = 0;
+	EFI_PHYSICAL_ADDRESS KernelAddress = LoadAddress;
+
+	UINTN EhdrSize = sizeof(ELFHeader);
+	ELFHeader EhdrReader;
+	ELFProgramHeader *EphdrReader = NULL;
+	VOID *TotalPhdr = NULL;
+	UINTN TotalPhdrSize = 0;
+
+	UINT64 MinSegAddr = MAX_UINT64;
+	UINT64 ReadOffset = 0;
+
+	if (File == NULL || !LoadAddress || !Size) {
+		Status = EFI_INVALID_PARAMETER;
+		goto out;
+	}
+	
+	NeedPages = EFI_SIZE_TO_PAGES(Size);
+	NeedSize = NeedPages * EFI_PAGE_SIZE;
+
+	Status = gBS->AllocatePages(
+		AllocateAddress,
+		EfiLoaderData,
+		NeedPages,	
+		&KernelAddress
+	);
+	if (EFI_ERROR(Status))
+		goto out;
+
+	gBS->SetMem(
+		(VOID *)KernelAddress,
+		NeedSize,
+		0
+	);
+
+	Status = File->Read(
+		File,
+		&EhdrSize,
+		&EhdrReader
+	);
+	if (EFI_ERROR(Status))
+		goto out;
+
+	TotalPhdrSize = EhdrReader.e_phentsize * EhdrReader.e_phnum;
+	Status = gBS->AllocatePool(
+		EfiLoaderData,
+		TotalPhdrSize,
+		&TotalPhdr
+	);
+	if (EFI_ERROR(Status))
+		goto rollback_out;
+
+	Status = File->SetPosition(
+		File,
+		EhdrReader.e_phoff
+	);
+	if (EFI_ERROR(Status))
+		goto free_phdrbuffer_out;
+
+	Status = File->Read(
+		File,
+		&TotalPhdrSize,
+		TotalPhdr
+	);
+	if (EFI_ERROR(Status))
+		goto free_phdrbuffer_out;
+
+	EphdrReader = (ELFProgramHeader *)TotalPhdr;
+	for (UINT64 i = 0; i < EhdrReader.e_phnum; i++) {
+		if (EphdrReader[i].p_type == PT_LOAD) {
+			if (EphdrReader[i].p_vaddr < MinSegAddr)
+				MinSegAddr = EphdrReader[i].p_vaddr;
+		}
+	}
+
+	for (UINT64 i = 0; i < EhdrReader.e_phnum; i++) {
+		if (EphdrReader[i].p_type == PT_LOAD) {
+			Status = File->SetPosition(
+				File,
+				EphdrReader[i].p_offset
+			);
+			if (EFI_ERROR(Status))
+				goto free_phdrbuffer_out;
+
+			ReadOffset = KernelAddress + EphdrReader[i].p_vaddr - MinSegAddr;
+
+			Status = File->Read(
+				File,
+				&EphdrReader[i].p_filesz,
+				(VOID *)ReadOffset
+			);
+			if (EFI_ERROR(Status))
+				goto free_phdrbuffer_out;
+		}
+	}
+
+	BootInfo->KernelStartAddress = KernelAddress + (EhdrReader.e_entry - MinSegAddr);
 
 free_phdrbuffer_out:
 	gBS->FreePool(TotalPhdr);
