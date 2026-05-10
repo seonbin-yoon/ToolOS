@@ -66,7 +66,7 @@ EFI_STATUS GetMemoryInfo(IN TOOLOS_MASTER_MAP* BootInfo) {
 	Status = gBS->AllocatePool(
 		EfiLoaderData,
 		ToolOSMMapSize,
-		(VOID **)&BootInfo->T_MemoryMap
+		(VOID **)&BootInfo->MemoryMap
 	);
 	if (EFI_ERROR(Status)) {
 		gBS->FreePool(MemoryMap);
@@ -74,7 +74,7 @@ EFI_STATUS GetMemoryInfo(IN TOOLOS_MASTER_MAP* BootInfo) {
 		goto out;
 	}
 
-	InfoMemoryMap = BootInfo->T_MemoryMap;
+	InfoMemoryMap = BootInfo->MemoryMap;
 
 	Status = gBS->GetMemoryMap(
 		&MemoryMapSize,
@@ -90,17 +90,17 @@ EFI_STATUS GetMemoryInfo(IN TOOLOS_MASTER_MAP* BootInfo) {
 	}
 
 	MemoryMapNums = MemoryMapSize / DescriptorSize;
-	BootInfo->T_MemoryMapInfo.MemoryMapNums = MemoryMapNums;
-	BootInfo->T_MemoryMapInfo.MapKey = MapKey;
-	BootInfo->T_MemoryMapInfo.TotalMemorySize = 0;
+	BootInfo->MemoryMapInfo.MemoryMapNums = MemoryMapNums;
+	BootInfo->MemoryMapInfo.MapKey = MapKey;
+	BootInfo->MemoryMapInfo.TotalMemorySize = 0;
 
 	MPTR = MemoryMap;
 	for (UINT64 i = 0; i < MemoryMapNums; i++) {
-		BootInfo->T_MemoryMap[i].NumberOfPages = MPTR->NumberOfPages;
-		BootInfo->T_MemoryMap[i].Reserved = 0;
-		BootInfo->T_MemoryMap[i].PhysicalStart = MPTR->PhysicalStart;
-		BootInfo->T_MemoryMap[i].Type = MPTR->Type;
-		BootInfo->T_MemoryMapInfo.TotalMemorySize += MPTR->NumberOfPages * 4096;
+		BootInfo->MemoryMap[i].NumberOfPages = MPTR->NumberOfPages;
+		BootInfo->MemoryMap[i].Reserved = 0;
+		BootInfo->MemoryMap[i].PhysicalStart = MPTR->PhysicalStart;
+		BootInfo->MemoryMap[i].Type = MPTR->Type;
+		BootInfo->MemoryMapInfo.TotalMemorySize += MPTR->NumberOfPages * 4096;
 		MPTR = (EFI_MEMORY_DESCRIPTOR*)((UINT8*)MPTR + DescriptorSize);
 	}
 

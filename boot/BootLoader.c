@@ -77,7 +77,7 @@ EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE * SystemTabl
 
 	Status = gBS->ExitBootServices(
 		ImageHandle,
-		BootInfo->T_MemoryMapInfo.MapKey
+		BootInfo->MemoryMapInfo.MapKey
 	);
 	if (EFI_ERROR(Status)) {
 		Print(L"ERROR [G] | Error code: %r", Status);

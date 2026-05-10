@@ -76,10 +76,10 @@ typedef struct {
 typedef struct {
 	CHAR8                    Signature[16];
 	UINT64                   KernelStartAddress;
-	TOOLOS_GRAPHICS_MAP      T_GraphicsMap;
-	TOOLOS_ACPI_TABLE*       T_ACPITable;
-	TOOLOS_MEMORY_MAPINFO    T_MemoryMapInfo;
-	TOOLOS_MEMORY_MAP*       T_MemoryMap;
+	TOOLOS_GRAPHICS_MAP      GraphicsMap;
+	TOOLOS_ACPI_TABLE*       ACPITable;
+	TOOLOS_MEMORY_MAPINFO    MemoryMapInfo;
+	TOOLOS_MEMORY_MAP*       MemoryMap;
 	CHAR8                    CheckSum;
 	UINT8                    Reserved[7];
 } TOOLOS_MASTER_MAP;

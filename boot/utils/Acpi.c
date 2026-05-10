@@ -23,7 +23,7 @@ EFI_STATUS GetACPIInfo(IN TOOLOS_MASTER_MAP *BootInfo) {
 
 	for (UINTN i = 0; i < gST->NumberOfTableEntries; i++) {
 		if (CompareGuid(&gST->ConfigurationTable[i].VendorGuid, &gEfiAcpi20TableGuid)) {
-			BootInfo->T_ACPITable = (TOOLOS_ACPI_TABLE *)gST->ConfigurationTable[i].VendorTable;
+			BootInfo->ACPITable = (TOOLOS_ACPI_TABLE *)gST->ConfigurationTable[i].VendorTable;
 			Status = EFI_SUCCESS;
 			goto out;
 		}

@@ -28,16 +28,16 @@ EFI_STATUS Get_GOP_Info(IN TOOLOS_MASTER_MAP* BootInfo) {
 	if (EFI_ERROR(Status))
 		goto out;
 
-	BootInfo->T_GraphicsMap.FrameBufferBase                = GOP->Mode->FrameBufferBase;
-	BootInfo->T_GraphicsMap.FrameBufferSize                = GOP->Mode->FrameBufferSize;
-	BootInfo->T_GraphicsMap.HorizontalResolution           = GOP->Mode->Info->HorizontalResolution;
-	BootInfo->T_GraphicsMap.VerticalResolution             = GOP->Mode->Info->VerticalResolution;
-	BootInfo->T_GraphicsMap.PixelInformation.BlueMask      = GOP->Mode->Info->PixelInformation.BlueMask;
-	BootInfo->T_GraphicsMap.PixelInformation.GreenMask     = GOP->Mode->Info->PixelInformation.GreenMask;
-	BootInfo->T_GraphicsMap.PixelInformation.RedMask       = GOP->Mode->Info->PixelInformation.RedMask;
-	BootInfo->T_GraphicsMap.PixelInformation.ReservedMask  = GOP->Mode->Info->PixelInformation.ReservedMask;
-	BootInfo->T_GraphicsMap.PixelsPerScanLine              = GOP->Mode->Info->PixelsPerScanLine;
-	BootInfo->T_GraphicsMap.Version                        = GOP->Mode->Info->Version;
+	BootInfo->GraphicsMap.FrameBufferBase                = GOP->Mode->FrameBufferBase;
+	BootInfo->GraphicsMap.FrameBufferSize                = GOP->Mode->FrameBufferSize;
+	BootInfo->GraphicsMap.HorizontalResolution           = GOP->Mode->Info->HorizontalResolution;
+	BootInfo->GraphicsMap.VerticalResolution             = GOP->Mode->Info->VerticalResolution;
+	BootInfo->GraphicsMap.PixelInformation.BlueMask      = GOP->Mode->Info->PixelInformation.BlueMask;
+	BootInfo->GraphicsMap.PixelInformation.GreenMask     = GOP->Mode->Info->PixelInformation.GreenMask;
+	BootInfo->GraphicsMap.PixelInformation.RedMask       = GOP->Mode->Info->PixelInformation.RedMask;
+	BootInfo->GraphicsMap.PixelInformation.ReservedMask  = GOP->Mode->Info->PixelInformation.ReservedMask;
+	BootInfo->GraphicsMap.PixelsPerScanLine              = GOP->Mode->Info->PixelsPerScanLine;
+	BootInfo->GraphicsMap.Version                        = GOP->Mode->Info->Version;
 
 out:
 	return Status;
