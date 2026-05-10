@@ -27,7 +27,7 @@ typedef struct {
 	UINT64 XsdtAddress;
 	UINT8  ExtendedChecksum;
 	UINT8  Reserved[3];
-} TOOLOS_ACPI_XSDT_TABLE;
+} TOOLOS_ACPI_TABLE;
 #pragma pack()
 
 #pragma pack(1)
@@ -77,7 +77,7 @@ typedef struct {
 	CHAR8                    Signature[16];
 	UINT64                   KernelStartAddress;
 	TOOLOS_GRAPHICS_MAP      T_GraphicsMap;
-	TOOLOS_ACPI_XSDT_TABLE*  T_ACPITable;
+	TOOLOS_ACPI_TABLE*       T_ACPITable;
 	TOOLOS_MEMORY_MAPINFO    T_MemoryMapInfo;
 	TOOLOS_MEMORY_MAP*       T_MemoryMap;
 	CHAR8                    CheckSum;
