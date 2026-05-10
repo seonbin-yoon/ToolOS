@@ -65,6 +65,14 @@ EFI_STATUS
 );
 
 EFI_STATUS
+(LoadKernelFile)(
+	TOOLOS_MASTER_MAP *BootInfo,
+	EFI_FILE_PROTOCOL *File,
+	EFI_PHYSICAL_ADDRESS LoadAddress,
+	UINT64 Size
+);
+
+EFI_STATUS
 (CloseKernelFile)(
 	EFI_FILE_PROTOCOL *File
 );
