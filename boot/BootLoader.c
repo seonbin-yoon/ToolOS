@@ -10,11 +10,14 @@
 
 #include "TBL.h"
 
+typedef VOID (*GoToKernel)(TOOLOS_MASTER_MAP *BootInfo);
+
 EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE * SystemTable) {
 	EFI_STATUS Status;
 	TOOLOS_MASTER_MAP *BootInfo = NULL;
 	EFI_FILE_PROTOCOL *KernelFile = NULL;
-	/* GoToKernel JumpToKernel; */
+	UINT64 KernelSize = 0;
+	GoToKernel KernelEntry;
 
 	SystemTable->ConOut->ClearScreen(SystemTable->ConOut);
 
@@ -24,23 +27,65 @@ EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE * SystemTabl
 		CPU_HALT;
 	}
 
-	Status = Get_ACPI_Info(BootInfo);
+	Status = GetMemoryInfo(BootInfo);
+	if (EFI_ERROR(Status)) {
+		Print(L"Failed Get MemoryMapInfo. | Error code: %r", Status);
+		CPU_HALT;
+	}
+
+	Status = GetACPIInfo(BootInfo);
 	if (EFI_ERROR(Status)) {
 		Print(L"Failed Get ACPI Info. | Error code: %r", Status);
 		CPU_HALT;
 	}
 
-	Status = Get_GOP_Info(BootInfo);
-	if (EFI_ERROR(Status)) {
-		Print(L"Failed Get GOP Info. | Error code: %r", Status);
-		CPU_HALT;
-	}
-
 	Status = OpenKernelFile(ImageHandle, L"TOSKernel.elf", &KernelFile);
 	if (EFI_ERROR(Status)) {
-		Print(L"Failed Open to Kernel File. | Error code: %r", Status);
+		Print(L"ERROR [A]");
 		CPU_HALT;
 	}
 
+	Status = ValidationELFHeader(KernelFile, FALSE);
+	if (EFI_ERROR(Status)) {
+		Print(L"ERROR [B] | Error code: %r", Status);
+		CPU_HALT;
+	}
+
+	Status = GetKernelFileSize(KernelFile, &KernelSize);
+	if (EFI_ERROR(Status)) {
+		Print(L"ERROR [C] | Error code: %r", Status);
+		CPU_HALT;
+	}
+
+	Status = LoadKernelFile(BootInfo, KernelFile, 0x100000, KernelSize);
+	if (EFI_ERROR(Status)) {
+		Print(L"ERROR [D] | Error code: %r", Status);
+		CPU_HALT;
+	}
+
+	Status = CloseKernelFile(KernelFile);
+	if (EFI_ERROR(Status)) {
+		Print(L"ERROR [E]");
+		CPU_HALT;
+	}
+
+	Status = GetMemoryInfo(BootInfo);
+	if (EFI_ERROR(Status)) {
+		Print(L"ERROR [F] | Error code: %r", Status);
+		CPU_HALT;
+	}
+
+	Status = gBS->ExitBootServices(
+		ImageHandle,
+		BootInfo->T_MemoryMapInfo.MapKey
+	);
+	if (EFI_ERROR(Status)) {
+		Print(L"ERROR [G] | Error code: %r", Status);
+		CPU_HALT;
+	}
+
+	KernelEntry = (GoToKernel)(BootInfo->KernelStartAddress);
+	KernelEntry(BootInfo);
+
 	return EFI_SUCCESS;
-}	
+}
