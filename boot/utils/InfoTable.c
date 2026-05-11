@@ -12,7 +12,7 @@
 
 const CHAR8 TOOLOS_INFOTABLE_Signature[16] = {"TOOLOS BOOTINFO"};
 
-EFI_STATUS Create_InfoTable(IN OUT TOOLOS_MASTER_MAP **Table_Pointer) {
+EFI_STATUS CreateInfoTable(IN OUT TOOLOS_MASTER_MAP **Table_Pointer) {
 	EFI_STATUS Status;
 	UINT64 TableSize = sizeof(TOOLOS_MASTER_MAP);
 	TOOLOS_MASTER_MAP *TempTable = NULL;
