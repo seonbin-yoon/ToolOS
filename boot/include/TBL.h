@@ -26,7 +26,7 @@
 	do { __asm__ __volatile__ ("cli; hlt"); } while (0)
 
 EFI_STATUS
-(Create_InfoTable)(
+(CreateInfoTable)(
 	IN OUT TOOLOS_MASTER_MAP **Table_Pointer
 );
 
@@ -41,7 +41,7 @@ EFI_STATUS
 );
 
 EFI_STATUS
-(Get_GOP_Info)(
+(GetGOPInfo)(
 	IN TOOLOS_MASTER_MAP *BootInfo
 );
 
