@@ -36,12 +36,7 @@ case "$CMD" in
 
     kb)
 		echo "[kernel.elf 빌드]"
-		mkdir -p $SRC/build
-		nasm -f elf64 $SRC/kernel/init.S -o $SRC/build/init.o
-		gcc -I $SRC/Include -c $SRC/Kernel/Kernel.c -o $SRC/Build/kernel.o \
-		   -ffreestanding -fno-stack-protector -mno-red-zone -fPIC -m64
-		ld -m elf_x86_64 -L $SRC/build -o $SRC/TOSKernel.elf $SRC/build/init.o $SRC/build/kernel.o -T $SRC/kernel/kernel.ld -static -nostdlib
-		cp $SRC/TOSKernel.elf $QEMUROOT/TOSKernel.elf
+		make
 		echo "성공적으로 작업을 완료했습니다."
 		;;
     b)
@@ -50,7 +45,7 @@ case "$CMD" in
 		python $SRC/scripts/sources.py
 		build -p MdeModulePkg/MdeModulePkg.dsc -m MdeModulePkg/Application/ToolOS/ToolOS.inf -a X64 -t GCC -b RELEASE -n 17
         cp ~/src/edk2/Build/MdeModule/RELEASE_GCC/X64/BootLoader.efi \
-           ~/run-ovmf/hda-contents/EFI/BOOT/BOOTX64.EFI
+        	~/run-ovmf/hda-contents/EFI/BOOT/BOOTX64.EFI
         echo "성공적으로 작업을 완료했습니다."
         ;;
 
