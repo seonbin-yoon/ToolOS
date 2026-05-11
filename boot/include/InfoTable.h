@@ -71,17 +71,17 @@ typedef struct {
 } TOOLOS_GRAPHICS_MAP;
 #pragma pack()
 
-// 16 + 48 + 8 + 24 + 8 + 1 + 7 = 112byte
+// 16 + 8 + 24 + 8 + 48 + 8 + 1 + 7 = 120byte
 #pragma pack(1)
 typedef struct {
-	CHAR8                    Signature[16];
-	UINT64                   KernelStartAddress;
-	TOOLOS_GRAPHICS_MAP      GraphicsMap;
-	TOOLOS_ACPI_TABLE*       ACPITable;
-	TOOLOS_MEMORY_MAPINFO    MemoryMapInfo;
-	TOOLOS_MEMORY_MAP*       MemoryMap;
-	CHAR8                    CheckSum;
-	UINT8                    Reserved[7];
+	CHAR8                 Signature[16];
+	UINT64                KernelStartAddress;
+	TOOLOS_MEMORY_MAPINFO MemoryMapInfo;
+	TOOLOS_MEMORY_MAP*    MemoryMap;
+	TOOLOS_GRAPHICS_MAP   GraphicsMap;
+	TOOLOS_ACPI_TABLE*    ACPITable;
+	CHAR8                 CheckSum;
+	UINT8                 Reserved[7];
 } TOOLOS_MASTER_MAP;
 #pragma pack()
 
