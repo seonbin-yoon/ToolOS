@@ -21,21 +21,21 @@ EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE * SystemTabl
 
 	SystemTable->ConOut->ClearScreen(SystemTable->ConOut);
 
-	Status = Create_InfoTable(&BootInfo);
+	Status = CreateInfoTable(&BootInfo);
 	if (EFI_ERROR(Status)) {
 		Print(L"Failed Create_InfoTable. | Error code: %r", Status);
-		CPU_HALT;
-	}
-
-	Status = GetMemoryInfo(BootInfo);
-	if (EFI_ERROR(Status)) {
-		Print(L"Failed Get MemoryMapInfo. | Error code: %r", Status);
 		CPU_HALT;
 	}
 
 	Status = GetACPIInfo(BootInfo);
 	if (EFI_ERROR(Status)) {
 		Print(L"Failed Get ACPI Info. | Error code: %r", Status);
+		CPU_HALT;
+	}
+
+	Status = GetGOPInfo(BootInfo);
+	if (EFI_ERROR(Status)) {
+		Print(L"Failed Get GOP Info. | Error code: %r", Status);
 		CPU_HALT;
 	}
 
