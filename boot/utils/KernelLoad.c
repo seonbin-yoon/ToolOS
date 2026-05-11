@@ -165,7 +165,6 @@ EFI_STATUS GetKernelFileSize(EFI_FILE_PROTOCOL *File, UINT64 *SizeBuffer) {
 
 	if (MaxSegAddr < MinSegAddr) {
 		Status = EFI_LOAD_ERROR;
-		Print(L"Min : %lx, Max : %lx\r\n", MinSegAddr, MaxSegAddr);
 		goto free_phdrbuffer_out;
 	}
 
@@ -179,7 +178,7 @@ out:
 	return Status;
 }
 
-EFI_STATUS LoadKernelFile(TOOLOS_MASTER_MAP *BootInfo, EFI_FILE_PROTOCOL *File, EFI_PHYSICAL_ADDRESS LoadAddress, UINT64 Size) {
+EFI_STATUS LoadKernelFile(TOOLOS_MASTER_MAP *BootInfo, EFI_FILE_PROTOCOL *File, EFI_PHYSICAL_ADDRESS LoadAddress, UINT64 MemSize) {
 	EFI_STATUS Status;
 	UINT64 NeedPages = 0;
 	UINT64 NeedSize = 0;
@@ -194,12 +193,12 @@ EFI_STATUS LoadKernelFile(TOOLOS_MASTER_MAP *BootInfo, EFI_FILE_PROTOCOL *File, 
 	UINT64 MinSegAddr = MAX_UINT64;
 	UINT64 ReadOffset = 0;
 
-	if (File == NULL || !LoadAddress || !Size) {
+	if (File == NULL || !LoadAddress || !MemSize) {
 		Status = EFI_INVALID_PARAMETER;
 		goto out;
 	}
 	
-	NeedPages = EFI_SIZE_TO_PAGES(Size);
+	NeedPages = EFI_SIZE_TO_PAGES(MemSize);
 	NeedSize = NeedPages * EFI_PAGE_SIZE;
 
 	Status = gBS->AllocatePages(
