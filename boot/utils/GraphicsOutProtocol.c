@@ -10,7 +10,7 @@
 
 #include "TBL.h"
 
-EFI_STATUS Get_GOP_Info(IN TOOLOS_MASTER_MAP* BootInfo) {
+EFI_STATUS GetGOPInfo(IN TOOLOS_MASTER_MAP* BootInfo) {
 	EFI_STATUS Status;
 	EFI_GRAPHICS_OUTPUT_PROTOCOL* GOP = NULL;
 	
@@ -24,7 +24,6 @@ EFI_STATUS Get_GOP_Info(IN TOOLOS_MASTER_MAP* BootInfo) {
 		NULL,
 		(VOID **)&GOP
 	);
-
 	if (EFI_ERROR(Status))
 		goto out;
 
