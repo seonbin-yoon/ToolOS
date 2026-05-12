@@ -69,7 +69,7 @@ typedef struct {
 } TOOLOS_GRAPHICS_MAP;
 #pragma pack()
 
-// 16 + 8 + 24 + 8 + 48 + 8 + 1 + 7 = 128byte
+// 16 + 8 + 24 + 8 + 48 + 8 + 7 + 1 = 120byte
 #pragma pack(1)
 typedef struct {
 	CHAR8                 Signature[16];
