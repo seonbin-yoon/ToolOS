@@ -16,7 +16,7 @@
 // ELF Header
 #pragma pack(1)
 typedef struct {
-	CHAR8 e_ident[16];
+	CHAR8  e_ident[16];
 	UINT16 e_type;
 	UINT16 e_machine;
 	UINT32 e_version;
