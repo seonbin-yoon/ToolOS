@@ -99,6 +99,7 @@ EFI_STATUS GetMemoryInfo(IN TOOLOS_BOOTINFO_TABLE* BootInfo) {
 		BootInfo->MemoryMap[i].Type = MPTR->Type;
 		BootInfo->MemoryMap[i].NumberOfPages = MPTR->NumberOfPages;
 		BootInfo->MemoryMap[i].PhysicalStart = MPTR->PhysicalStart;
+		BootInfo->MemoryMap[i].Attribute = MPTR->Attribute;
 		BootInfo->MemoryMapInfo.TotalMemorySize += MPTR->NumberOfPages * 4096;
 		MPTR = (EFI_MEMORY_DESCRIPTOR*)((UINT8*)MPTR + DescriptorSize);
 	}
