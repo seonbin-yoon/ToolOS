@@ -10,8 +10,6 @@
 
 #include "TBL.h"
 
-typedef VOID (*GoToKernel)(TOOLOS_BOOTINFO_TABLE *BootInfo);
-
 EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE * SystemTable) {
 	EFI_STATUS Status;
 	TOOLOS_BOOTINFO_TABLE *BootInfo = NULL;

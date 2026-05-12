@@ -25,6 +25,8 @@
 #define CPU_HALT \
 	do { __asm__ __volatile__ ("cli; hlt"); } while (0)
 
+typedef VOID (*GoToKernel)(TOOLOS_BOOTINFO_TABLE *BootInfo);
+
 EFI_STATUS
 (CreateInfoTable)(
 	IN OUT TOOLOS_BOOTINFO_TABLE **Table_Pointer
