@@ -8,10 +8,8 @@
  *   Where the structure that the kernel reads is defined
  */
 
-#ifndef InfoTable_h
-#define InfoTable_h
-
-// Using For ToolOS
+#ifndef INFOTABLE_H
+#define INFOTABLE_H
 
 #include "TBL.h"
 
@@ -27,25 +25,25 @@ typedef struct {
 	UINT64 XsdtAddress;
 	UINT8  ExtendedChecksum;
 	UINT8  Reserved[3];
-} TOOLOS_ACPI_TABLE;
+} ACPI_RSDP_TABLE;
 #pragma pack()
 
 #pragma pack(1)
-// 4 + 4 + 8 + 8 = 24byte
+// 8 + 8 + 8 + 8 = 32byte
 typedef struct {
-	UINT32                  Type;
-	UINT32                  Reserved; // MUST BE 0
-	UINT64                  PhysicalStart;
-	UINT64                  NumberOfPages;
+	UINT64 Type;
+	UINT64 PhysicalStart;
+	UINT64 NumberOfPages;
+	UINT64 Attribute;
 } TOOLOS_MEMORY_MAP;
 #pragma pack()
 
 #pragma pack(1)
 // 8 + 8 + 8 = 24byte
 typedef struct {
-	UINTN MemoryMapNums;
-	UINTN MapKey;
-	UINTN TotalMemorySize;
+	UINT64 MemoryMapNums;
+	UINT64 MapKey;
+	UINT64 TotalMemorySize;
 } TOOLOS_MEMORY_MAPINFO;
 
 #pragma pack(1)
@@ -62,7 +60,7 @@ typedef struct {
 // 8 + 8 + 4 + 4 + 4 + 4 + 16 = 48byte
 typedef struct {
 	EFI_PHYSICAL_ADDRESS    FrameBufferBase;
-	UINTN                   FrameBufferSize;
+	UINT64                  FrameBufferSize;
 	UINT32                  Version;
 	UINT32                  HorizontalResolution;
 	UINT32                  VerticalResolution;
@@ -71,20 +69,18 @@ typedef struct {
 } TOOLOS_GRAPHICS_MAP;
 #pragma pack()
 
-// 16 + 8 + 24 + 8 + 48 + 8 + 1 + 7 = 120byte
+// 16 + 8 + 24 + 8 + 48 + 8 + 1 + 7 = 128byte
 #pragma pack(1)
 typedef struct {
 	CHAR8                 Signature[16];
-	UINT64                KernelStartAddress;
+	EFI_PHYSICAL_ADDRESS  KernelStartAddress;
 	TOOLOS_MEMORY_MAPINFO MemoryMapInfo;
 	TOOLOS_MEMORY_MAP*    MemoryMap;
 	TOOLOS_GRAPHICS_MAP   GraphicsMap;
-	TOOLOS_ACPI_TABLE*    ACPITable;
-	CHAR8                 CheckSum;
+	ACPI_RSDP_TABLE*      RSDPTable;
 	UINT8                 Reserved[7];
-} TOOLOS_MASTER_MAP;
+	BOOLEAN               SafeWritten;
+} TOOLOS_BOOTINFO_TABLE;
 #pragma pack()
 
 #endif
-
-
