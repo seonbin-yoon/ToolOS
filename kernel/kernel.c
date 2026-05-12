@@ -12,11 +12,11 @@
 #include "type.h"
 #include "func.h"
 
-void kernel_main(struct TOOLOS_MASTER_MAP *boot_info) {
-	success_print(boot_info, false);
+void kernel_main(struct TOOLOS_BOOTINFO_TABLE *boot_info) {
+	success_print(boot_info, true);
 }
 
-void success_print(struct TOOLOS_MASTER_MAP *boot_info, bool is_success) {
+void success_print(struct TOOLOS_BOOTINFO_TABLE *boot_info, bool is_success) {
 	u32 *gop = (u32 *)boot_info->GraphicsMap.FrameBufferBase;
 
 	if (is_success) {
