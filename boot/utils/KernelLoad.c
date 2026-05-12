@@ -178,7 +178,7 @@ out:
 	return Status;
 }
 
-EFI_STATUS LoadKernelFile(TOOLOS_MASTER_MAP *BootInfo, EFI_FILE_PROTOCOL *File, EFI_PHYSICAL_ADDRESS LoadAddress, UINT64 MemSize) {
+EFI_STATUS LoadKernelFile(TOOLOS_BOOTINFO_TABLE *BootInfo, EFI_FILE_PROTOCOL *File, EFI_PHYSICAL_ADDRESS LoadAddress, UINT64 MemSize) {
 	EFI_STATUS Status;
 	UINT64 NeedPages = 0;
 	UINT64 NeedSize = 0;

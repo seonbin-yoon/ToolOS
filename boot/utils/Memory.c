@@ -14,7 +14,7 @@
 EFI_MEMORY_DESCRIPTOR *MemoryMap = NULL;
 VOID *InfoMemoryMap = NULL;
 
-EFI_STATUS GetMemoryInfo(IN TOOLOS_MASTER_MAP* BootInfo) {
+EFI_STATUS GetMemoryInfo(IN TOOLOS_BOOTINFO_TABLE* BootInfo) {
 	EFI_STATUS Status;
 
 	UINTN MemoryMapSize = 0;
@@ -96,10 +96,9 @@ EFI_STATUS GetMemoryInfo(IN TOOLOS_MASTER_MAP* BootInfo) {
 
 	MPTR = MemoryMap;
 	for (UINT64 i = 0; i < MemoryMapNums; i++) {
-		BootInfo->MemoryMap[i].NumberOfPages = MPTR->NumberOfPages;
-		BootInfo->MemoryMap[i].Reserved = 0;
-		BootInfo->MemoryMap[i].PhysicalStart = MPTR->PhysicalStart;
 		BootInfo->MemoryMap[i].Type = MPTR->Type;
+		BootInfo->MemoryMap[i].NumberOfPages = MPTR->NumberOfPages;
+		BootInfo->MemoryMap[i].PhysicalStart = MPTR->PhysicalStart;
 		BootInfo->MemoryMapInfo.TotalMemorySize += MPTR->NumberOfPages * 4096;
 		MPTR = (EFI_MEMORY_DESCRIPTOR*)((UINT8*)MPTR + DescriptorSize);
 	}
