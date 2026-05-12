@@ -16,7 +16,8 @@ section .text
 	extern kernel_main
 
 _start:
-	; init all registers to 0
+	cli
+	; init all registers to 0; exclude rdi
 	xor rax, rax
 	mov rbx, rax
 	mov rcx, rax
@@ -32,13 +33,12 @@ _start:
 	mov r15, rax
 	
 	; there registers unused on 64bit environment
+	; so, clear to 0
 	mov ds, ax
 	mov ss, ax
 	mov es, ax
 
-	jmp _set_stack_pointer
-
-_set_stack_pointer:
+	; set stack_pointer
 	mov rsp, stack_memory + 16384
 	mov rbp, rsp
 
@@ -63,6 +63,9 @@ _check_signature:
 	mov rax, [rdi + 8]
 	mov rbx, [sig_part2]
 	cmp rax, rbx
+	jne _not_equal
+
+	cmp byte [rdi + 119], 1
 	jne _not_equal
 	ret
 
