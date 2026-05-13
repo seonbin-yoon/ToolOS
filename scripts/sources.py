@@ -3,12 +3,14 @@ import os
 
 def update_inf_sources(inf_path: str, source_dirs: list[str]) -> None:
     found_source_files: list[str] = []
+    inf_path = os.path.join(os.path.expanduser("~"), inf_path)
 
     if not os.path.exists(inf_path):
         print(f"에러: {inf_path}를 찾지 못했습니다.")
         return
 
     for source_dir in source_dirs:
+        source_dir = os.path.join(os.path.expanduser("~"), source_dir)
         if not os.path.exists(source_dir):
             print(f"에러: {source_dir}은 존재하지 않는 경로입니다.")
             continue
@@ -19,12 +21,11 @@ def update_inf_sources(inf_path: str, source_dirs: list[str]) -> None:
             for file in files:
                 if file.startswith('_'):
                     continue
-                if not file.endswith('.c') or file.endswith('.h'):
-                    continue
 
-                abs_path = os.path.abspath(os.path.join(root, file))
-                rel_path = os.path.relpath(abs_path, start=full_path)
-                found_source_files.append(rel_path)
+                if file.endswith('.c') or file.endswith('.h'):
+                    abs_path = os.path.abspath(os.path.join(root, file))
+                    rel_path = os.path.relpath(abs_path, start=full_path)
+                    found_source_files.append(rel_path)
 
     found_source_files.sort()
 
