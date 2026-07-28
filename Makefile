@@ -1,33 +1,44 @@
 CC = gcc
-AS = nasm
+ASM = nasm
 LD = ld
-OBJCOPY = objcopy
+# OBJCOPY = objcopy
 
-SRC_DIR = ./kernel
-INC_DIR = ./include
-BUILD_DIR = ./build
-HOME_DIR = /home/pororo
+KERNEL = ./kernel
+INCLUDE = ./include
+TMP = ./build
 
-ASFLAGS = -f elf64
-CFLAGS = -m64 -I$(INC_DIR) -ffreestanding -fno-stack-protector -mno-red-zone
-LDFLAGS = -m elf_x86_64 -T $(SRC_DIR)/kernel.ld -static -nostdlib
+ASMFLAGS = -f elf64
+CFLAGS = -g -m64 -O2 -Wall -ffreestanding -nostdinc -fno-stack-protector -mno-red-zone -I$(INCLUDE) # -finline-functions
+LDFLAGS = -m elf_x86_64 -T $(KERNEL)/kernel.ld -z max-page-size=4096 --defsym __BUILD_DATE=$(shell date +'%Y%m%d') --defsym __BUILD_TIME=$(shell date +'%H%M%S') -static -nostdlib
 
-TARGET = TOSKernel.elf
-OBJS = $(BUILD_DIR)/init.o $(BUILD_DIR)/kernel.o
+NAME = ToolOS
+C_VERSION = c23 # c89, c99, c11, c17, c23
 
-all: $(TARGET)
+RM = rm -rf
 
-$(TARGET): $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $^
-	cp $@ $(HOME_DIR)/run-ovmf/hda-contents/
+SRC_C = $(wildcard $(KERNEL)/*.c)
+SRC_S = $(wildcard $(KERNEL)/*.S)
 
-$(BUILD_DIR)/init.o: $(SRC_DIR)/init.S
-	@mkdir -p $(BUILD_DIR)
-	$(AS) $(ASFLAGS) $< -o $@
+OBJS = $(patsubst $(KERNEL)/%.c, $(TMP)/%.o, $(SRC_C))
+OBJS += $(patsubst $(KERNEL)/%.S, $(TMP)/%.o, $(SRC_S))
 
-$(BUILD_DIR)/kernel.o: $(SRC_DIR)/kernel.c
-	@mkdir -p $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+all: $(NAME).elf
+
+$(TMP):
+	@mkdir -p $@
+
+$(NAME).elf: $(OBJS)
+	@$(LD) $(LDFLAGS) -o $@ $^
+
+$(TMP)/%.o: $(KERNEL)/%.c | $(TMP)
+	@echo [CC] $@
+	@$(CC) $(CFLAGS) -std=$(C_VERSION) -c $< -o $@
+
+$(TMP)/%.o: $(KERNEL)/%.S | $(TMP)
+	@echo [ASM] $@
+	@$(ASM) $(ASMFLAGS) $< -o $@
 
 clean:
-	rm -rf $(BUILD_DIR) $(TARGET)
+	$(RM) $(NAME).elf
+	$(RM) $(TMP)
+	@echo Cleaned.

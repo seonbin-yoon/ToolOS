@@ -1,62 +1,67 @@
-import os
+import sys
+from pathlib import Path
 
 
-def update_inf_sources(inf_path: str, source_dirs: list[str]) -> None:
-    found_source_files: list[str] = []
-    inf_path = os.path.join(os.path.expanduser("~"), inf_path)
-
-    if not os.path.exists(inf_path):
-        print(f"에러: {inf_path}를 찾지 못했습니다.")
-        return
-
+def get_source_files(source_dirs: list[Path]) -> list[Path]:
+    found_source_files: list[Path] = []
     for source_dir in source_dirs:
-        source_dir = os.path.join(os.path.expanduser("~"), source_dir)
-        if not os.path.exists(source_dir):
-            print(f"에러: {source_dir}은 존재하지 않는 경로입니다.")
-            continue
+        if not source_dir.exists():
+            raise FileNotFoundError(f"에러: {source_dir}은 존재하지 않는 경로입니다.")
 
-        full_path = os.path.abspath(source_dir)
+        base_dir = source_dir.resolve()
 
-        for root, _, files in os.walk(source_dir):
-            for file in files:
-                if file.startswith('_'):
-                    continue
-
-                if file.endswith('.c') or file.endswith('.h'):
-                    abs_path = os.path.abspath(os.path.join(root, file))
-                    rel_path = os.path.relpath(abs_path, start=full_path)
-                    found_source_files.append(rel_path)
+        for file_path in base_dir.rglob("*"):
+            # 디렉터리가 아닌 파일이고, 확장자가 지정한 조건에 맞는지 확인
+            if file_path.is_file() and file_path.suffix in [".c", ".h", "._"]:
+                # relative_to를 사용해 os.path.relpath를 대체합니다.
+                rel_path = file_path.relative_to(base_dir)
+                found_source_files.append(rel_path)
 
     found_source_files.sort()
+    return found_source_files
 
+def main(inf_path: Path, source_dirs: list[Path]):
+    if not inf_path.exists():
+        raise FileNotFoundError(f"에러: {inf_path}를 찾지 못했습니다.")
+
+    found_source_files = get_source_files(source_dirs)
+
+    new: list[str] = []
     with open(inf_path, encoding='utf-8') as inf_file:
-        write_lines: list[str] = []
-        write: bool = False
+        sources_section = False
 
         for line in inf_file:
-            if line.strip().startswith('[Sources]'):
-                write_lines.append(line)
+            if sources_section and not line.startswith('[Sources]'):
+                sources_section = False
+
+            if line.startswith('[Sources]'):
+                new.append(line)
 
                 for found_source_file in found_source_files:
-                    write_lines.append(f"  {found_source_file}\n")
+                    new.append(f"  {found_source_file}\n")
 
-                write_lines.append("\n")
-                write = True
+                new.append("\n")
+
+                sources_section = True
                 continue
 
-            if write and line.strip().startswith('['):
-                write = False
-
-            if not write:
-                write_lines.append(line)
+            if not sources_section:
+                new.append(line)
 
     with open(inf_path, 'w', encoding='utf-8') as inf_file:
-        inf_file.writelines(write_lines)
+        inf_file.writelines(new)
 
-    print(f"source.py: {len(found_source_files)}개의 소스 파일이 업데이트 되었습니다.")
+    print(f"source.py: {len(found_source_files)}개의 소스 파일이 등록 되었습니다.")
 
 if __name__ == "__main__":
-    update_inf_sources(
-        "src/edk2/MdeModulePkg/Application/ToolOS/ToolOS.inf",
-        ["ToolOS/boot"]
-        )
+    try:
+        main(
+            Path(sys.argv[1]),
+            [Path(p) for p in sys.argv[2:]]
+            )
+    except IndexError:
+        print("수동으로 실행해선 안됩니다. build.sh를 사용하세요.")
+    except (FileNotFoundError) as e:
+        print(str(e))
+        sys.exit(1)
+
