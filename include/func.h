@@ -11,8 +11,8 @@
 #ifndef FUNC_H
 #define FUNC_H
 
-#include "type.h"
+#include <bootinfo.h>
 
-void (success_print)(struct TOOLOS_BOOTINFO_TABLE *boot_info, bool is_success);
+void (success_print)(struct toolos_bootinfo_table *boot_info, bool is_success);
 
 #endif

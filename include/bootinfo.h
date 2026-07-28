@@ -8,78 +8,78 @@
  *  
  */
 
-#ifndef Bootinfo_h
-#define Bootinfo_h
+#ifndef BOOTINFO_H
+#define BOOTINFO_H
 
-#include "type.h"
+#include <types.h>
 
 #pragma pack(1)
 // 8 + 1 + 6 + 1 + 4 + 4 + 8 + 1 + 3 = 36byte
-struct ACPI_RSDP_TABLE {
-	c8  Signature[8];
-	u8  Checksum;
-	c8  OEMID[6];
-	u8  Revision;
-	u32 RsdtAddress;
-	u32 Length;
-	u64 XsdtAddress;
-	u8  ExtendedChecksum;
-	u8  Reserved[3];
+struct acpi_rsdp_table {
+	c8  signature[8];
+	u8  checksum;
+	c8  oemid[6];
+	u8  revision;
+	u32 rsdt_address;
+	u32 length;
+	u64 xsdt_address;
+	u8  extended_checksum;
+	u8  reserved[3];
 };
 #pragma pack()
 
 #pragma pack(1)
 // 8 + 8 + 8 + 8 = 32byte
-struct TOOLOS_MEMORY_MAP {
-	u64 Type;
-	u64 PhysicalStart;
-	u64 NumberOfPages;
-	u64 Attribute;
+struct toolos_memory_map {
+	u64 type;
+	u64 physical_start;
+	u64 number_of_pages;
+	u64 attribute;
 };
 #pragma pack()
 
 #pragma pack(1)
 // 8 + 8 + 8 = 24byte
-struct TOOLOS_MEMORY_MAPINFO {
-	u64 MemoryMapNums;
-	u64 MapKey;
-	u64 TotalMemorySize;
+struct toolos_memory_mapinfo {
+	u64 memory_map_nums;
+	u64 mapkey;
+	u64 total_memory_size;
 };
 
 #pragma pack(1)
 // 4 + 4 + 4 + 4 = 16byte
 struct TOOLOS_PIXEL_BITMASK {
-	u32 RedMask;
-	u32 GreenMask;
-	u32 BlueMask;
-	u32 ReservedMask;
+	u32 red_mask;
+	u32 green_mask;
+	u32 blue_mask;
+	u32 reserved_mask;
 };
 #pragma pack()
 
 #pragma pack(1)
 // 8 + 8 + 4 + 4 + 4 + 4 + 16 = 48byte
-struct TOOLOS_GRAPHICS_MAP {
-	u64                         FrameBufferBase;
-	u64                         FrameBufferSize;
-	u32                         Version;
-	u32                         HorizontalResolution;
-	u32                         VerticalResolution;
-	u32                         PixelsPerScanLine;
-	struct TOOLOS_PIXEL_BITMASK PixelInformation;
+struct toolos_graphics_map {
+	u64                         frame_buffer_base;
+	u64                         frame_buffer_size;
+	u32                         version;
+	u32                         horizontal_resolution;
+	u32                         vertical_resolution;
+	u32                         pixels_per_scan_line;
+	struct TOOLOS_PIXEL_BITMASK pixel_Information;
 };
 #pragma pack()
 
 // 16 + 8 + 24 + 8 + 48 + 8 + 1 + 7 = 120byte
 #pragma pack(1)
-struct TOOLOS_BOOTINFO_TABLE {
-	c8                           Signature[16];
-	u64                          KernelStartAddress;
-	struct TOOLOS_MEMORY_MAPINFO MemoryMapInfo;
-	struct TOOLOS_MEMORY_MAP*    MemoryMap;
-	struct TOOLOS_GRAPHICS_MAP   GraphicsMap;
-	struct ACPI_RSDP_TABLE*      RSDPTable;
-	u8                           Reserved[7];
-	bool                         SafeWritten;
+struct toolos_bootinfo_table {
+	c8                           signature[16];
+	u64                          kernel_start_Address;
+	struct toolos_memory_mapinfo memory_mapinfo;
+	struct toolos_memory_map*    memory_map;
+	struct toolos_graphics_map   graphics_map;
+	struct acpi_rsdp_table*      rsdp_table;
+	u8                           reserved[7];
+	bool                         safe_written;
 };
 #pragma pack()
 
