@@ -287,9 +287,3 @@ out:
 	return Status;
 }
 
-EFI_STATUS CloseKernelFile(EFI_FILE_PROTOCOL *File) {
-	EFI_STATUS Status;
-
-	Status = File->Close(File);
-	return Status;
-} 
