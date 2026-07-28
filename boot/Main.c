@@ -37,9 +37,9 @@ EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable
 		CPU_HALT;
 	}
 
-	Status = OpenKernelFile(ImageHandle, L"TOSKernel.elf", &KernelFile);
+	Status = OpenKernelFile(ImageHandle, L"ToolOS.elf", &KernelFile);
 	if (EFI_ERROR(Status)) {
-		Print(L"Failed to Open Kernel File. | Error code: %r". Status);
+		Print(L"Failed to Open Kernel File. | Error code: %r", Status);
 		CPU_HALT;
 	}
 
