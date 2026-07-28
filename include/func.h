@@ -13,6 +13,8 @@
 
 #include <bootinfo.h>
 
-void (success_print)(struct toolos_bootinfo_table *boot_info, bool is_success);
+void success_print(struct toolos_graphics_map *graphics_map, bool is_success);
+int set_paging();
+int set_gdt();
 
 #endif
