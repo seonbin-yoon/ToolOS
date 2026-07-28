@@ -48,7 +48,7 @@ struct toolos_memory_mapinfo {
 
 #pragma pack(1)
 // 4 + 4 + 4 + 4 = 16byte
-struct TOOLOS_PIXEL_BITMASK {
+struct toolos_pixel_bitmask {
 	u32 red_mask;
 	u32 green_mask;
 	u32 blue_mask;
@@ -65,7 +65,7 @@ struct toolos_graphics_map {
 	u32                         horizontal_resolution;
 	u32                         vertical_resolution;
 	u32                         pixels_per_scan_line;
-	struct TOOLOS_PIXEL_BITMASK pixel_Information;
+	struct toolos_pixel_bitmask pixel_Information;
 };
 #pragma pack()
 
