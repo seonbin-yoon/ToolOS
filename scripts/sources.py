@@ -28,24 +28,22 @@ def main(inf_path: Path, source_dirs: list[Path]):
 
     new: list[str] = []
     with open(inf_path, encoding='utf-8') as inf_file:
-        sources_section = False
+        wait = False
 
         for line in inf_file:
-            if sources_section and not line.startswith('[Sources]'):
-                sources_section = False
-
             if line.startswith('[Sources]'):
                 new.append(line)
 
                 for found_source_file in found_source_files:
-                    new.append(f"  {found_source_file}\n")
+                    new.append(f"  {str(found_source_file)}\n")
 
                 new.append("\n")
+                wait = True
 
-                sources_section = True
-                continue
+            elif wait and line.startswith('['):
+                wait = False
 
-            if not sources_section:
+            if not wait:
                 new.append(line)
 
     with open(inf_path, 'w', encoding='utf-8') as inf_file:
