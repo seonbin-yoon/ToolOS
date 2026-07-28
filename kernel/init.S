@@ -19,18 +19,18 @@ _start:
 	cli
 	; init all registers to 0; exclude rdi
 	xor rax, rax
-	mov rbx, rax
-	mov rcx, rax
-	mov rdx, rax
-	mov rsi, rax
-	mov r8, rax
-	mov r9, rax
-	mov r10, rax
-	mov r11, rax
-	mov r12, rax
-	mov r13, rax
-	mov r14, rax
-	mov r15, rax
+	xor rbx, rbx
+	xor rcx, rcx
+	xor rdx, rdx
+	xor rsi, rsi
+	xor r8, r8 
+	xor r9, r9
+	xor r10, r10
+	xor r11, r11
+	xor r12, r12
+	xor r13, r13
+	xor r14, r14
+	xor r15, r15
 
 	; there registers unused on 64bit environment
 	; so, clear to 0
@@ -46,8 +46,6 @@ _start:
 
 _main:
 	call _check_signature
-	call _set_gdt_table
-	call _set_paging
 	call kernel_main
 
 .halt:
@@ -72,14 +70,6 @@ _check_signature:
 _not_equal:
 	mov rax, 0x12345678
 	hlt
-
-_set_gdt_table:
-	; TODO: add logic
-	ret
-
-_set_paging:
-	; TODO: add logic
-	ret
 
 section .data
 	sig_part1 dq 0x4220534F4C4F4F54 ; "TOOLOS B"
