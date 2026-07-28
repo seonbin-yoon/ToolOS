@@ -8,6 +8,9 @@ OS_SRC=${HOME}/src/ToolOS
 EDK2_SRC=${HOME}/edk2_src/edk2
 BUILD_THREADS=$(($(nproc) * 2 + 1))
 
+# Kernel Build Options
+ELF_NAME="ToolOS"
+
 # BootLoader Build Options
 BUILD_OPTIONS="DEBUG" # RELEASE / DEBUG
 BUILD_TOOL_CHAIN="GCC" # GCC / MSVC
@@ -55,6 +58,13 @@ case "${CMD}" in
     kb)
 		echo "[kernel.elf 빌드]"
 		make
+		RET_CODE=$?
+		if [[ ${RET_CODE} != 0 ]]; then
+            echo "커널 빌드중 에러가 발생했습니다. 반환 코드는 ${RET_CODE}입니다."
+            exit ${RET_CODE}
+        fi
+
+		cp -v ${OS_SRC}/${ELF_NAME}.elf ${QEMU_DISK_ROOT}
 		echo "성공적으로 작업을 완료했습니다."
 		;;
     b)
