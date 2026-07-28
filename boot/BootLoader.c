@@ -10,7 +10,7 @@
 
 #include "TBL.h"
 
-EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE * SystemTable) {
+EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	EFI_STATUS Status;
 	TOOLOS_BOOTINFO_TABLE *BootInfo = NULL;
 	EFI_FILE_PROTOCOL *KernelFile = NULL;
@@ -21,55 +21,49 @@ EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE * SystemTabl
 
 	Status = CreateInfoTable(&BootInfo);
 	if (EFI_ERROR(Status)) {
-		Print(L"Failed Create_InfoTable. | Error code: %r", Status);
+		Print(L"Failed to Create BootTable. | Error code: %r", Status);
 		CPU_HALT;
 	}
 
 	Status = GetACPIInfo(BootInfo);
 	if (EFI_ERROR(Status)) {
-		Print(L"Failed Get ACPI Info. | Error code: %r", Status);
+		Print(L"Failed to Get ACPI Info. | Error code: %r", Status);
 		CPU_HALT;
 	}
 
 	Status = GetGOPInfo(BootInfo);
 	if (EFI_ERROR(Status)) {
-		Print(L"Failed Get GOP Info. | Error code: %r", Status);
+		Print(L"Failed to Get GOP Info. | Error code: %r", Status);
 		CPU_HALT;
 	}
 
 	Status = OpenKernelFile(ImageHandle, L"TOSKernel.elf", &KernelFile);
 	if (EFI_ERROR(Status)) {
-		Print(L"ERROR [A]");
+		Print(L"Failed to Open Kernel File. | Error code: %r". Status);
 		CPU_HALT;
 	}
 
 	Status = ValidationELFHeader(KernelFile, FALSE);
 	if (EFI_ERROR(Status)) {
-		Print(L"ERROR [B] | Error code: %r", Status);
+		Print(L"Failed to Validation Kernel File. | Error code: %r", Status);
 		CPU_HALT;
 	}
 
 	Status = GetKernelFileSize(KernelFile, &KernelMemSize);
 	if (EFI_ERROR(Status)) {
-		Print(L"ERROR [C] | Error code: %r", Status);
+		Print(L"Failed to Get Kernel Size. | Error code: %r", Status);
 		CPU_HALT;
 	}
 
 	Status = LoadKernelFile(BootInfo, KernelFile, 0x100000, KernelMemSize);
 	if (EFI_ERROR(Status)) {
-		Print(L"ERROR [D] | Error code: %r", Status);
-		CPU_HALT;
-	}
-
-	Status = CloseKernelFile(KernelFile);
-	if (EFI_ERROR(Status)) {
-		Print(L"ERROR [E]");
+		Print(L"ERROR to Load Kernel File. | Error code: %r", Status);
 		CPU_HALT;
 	}
 
 	Status = GetMemoryInfo(BootInfo);
 	if (EFI_ERROR(Status)) {
-		Print(L"ERROR [F] | Error code: %r", Status);
+		Print(L"ERROR to Get Memory Info. | Error code: %r", Status);
 		CPU_HALT;
 	}
 
@@ -80,7 +74,7 @@ EFI_STATUS EFIAPI BootMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE * SystemTabl
 		BootInfo->MemoryMapInfo.MapKey
 	);
 	if (EFI_ERROR(Status)) {
-		Print(L"ERROR [G] | Error code: %r", Status);
+		Print(L"Failed to exit EFI environment. | Error code: %r", Status);
 		CPU_HALT;
 	}
 
