@@ -31,7 +31,7 @@ _start:
 	mov r13, rax
 	mov r14, rax
 	mov r15, rax
-	
+
 	; there registers unused on 64bit environment
 	; so, clear to 0
 	mov ds, ax
@@ -50,7 +50,7 @@ _main:
 	call _set_paging
 	call kernel_main
 
-.halt
+.halt:
 	hlt
 	jmp .halt
 
