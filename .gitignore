@@ -1,3 +1,6 @@
 .vscode/
 build/
-TOSKernel.elf
+objs/
+
+compile_commands.json
+ToolOS.elf
