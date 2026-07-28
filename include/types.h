@@ -11,18 +11,15 @@
 #ifndef TYPE_H
 #define TYPE_H
 
-#include <stdint.h>
-#include <stdbool.h>
+typedef unsigned long long u64;
+typedef unsigned long      u32;
+typedef unsigned short     u16;
+typedef unsigned char      u8;
 
-typedef uint64_t u64;
-typedef uint32_t u32;
-typedef uint16_t u16;
-typedef uint8_t  u8;
-
-typedef int64_t  i64;
-typedef int32_t  i32;
-typedef int16_t  i16;
-typedef int8_t   i8;
+typedef long long  i64;
+typedef long       i32;
+typedef short      i16;
+typedef char       i8;
 
 typedef unsigned int   c32;
 typedef unsigned short c16;
