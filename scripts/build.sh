@@ -39,6 +39,7 @@ case "${CMD}" in
         echo "[QEMU 실행]"
         cd $QEMU_ROOT
 		qemu-system-x86_64 \
+		-s -S \
 		-d int,cpu_reset,guest_errors -D latest.log \
 		-enable-kvm \
 		-machine q35 \
@@ -49,9 +50,10 @@ case "${CMD}" in
 		-drive file=fat:rw:hda-contents,format=raw,if=none,id=bootdisk \
 		-device ide-hd,drive=bootdisk,bootindex=0 \
 		-vga std \
-		-serial stdio \
 		-monitor vc \
-		-net none
+		-net none \
+		&
+		# -serial stdio \
 		# -device qemu-xhci \
 	    # -device usb-tablet \
         ;;
@@ -79,6 +81,11 @@ case "${CMD}" in
         fi
 
 		build -p MdeModulePkg/MdeModulePkg.dsc -m MdeModulePkg/Application/ToolOS/ToolOS.inf -a ${BUILD_ARCH} -t ${BUILD_TOOL_CHAIN} -b ${BUILD_OPTIONS} -n ${BUILD_THREADS}
+		RET_CODE=$?
+		if [[ ${RET_CODE} != 0 ]]; then
+            echo "부트로더 빌드중 에러가 발생했습니다. 반환 코드는 ${RET_CODE}입니다."
+            exit ${RET_CODE}
+        fi
         cp -v ${EDK2_SRC}/Build/MdeModule/${BUILD_OPTIONS}_${BUILD_TOOL_CHAIN}/X64/${LOADER_NAME}.efi ${QEMU_DISK_ROOT}/EFI/BOOT/BOOTX64.EFI
         echo "성공적으로 작업을 완료했습니다."
         ;;
