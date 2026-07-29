@@ -8,7 +8,7 @@ INCLUDE = ./include
 TMP = ./build
 
 ASMFLAGS = -f elf64
-CFLAGS = -g -m64 -O2 -Wall -ffreestanding -nostdinc -fno-stack-protector -mno-red-zone -I$(INCLUDE) # -finline-functions
+CFLAGS = -g -m64 -O2 -Wall -ffreestanding -nostdinc -fno-stack-protector -mno-red-zone -masm=intel -I$(INCLUDE) # -finline-functions
 LDFLAGS = -m elf_x86_64 -T $(KERNEL)/kernel.ld -z max-page-size=4096 --defsym __BUILD_DATE=$(shell date +'%Y%m%d') --defsym __BUILD_TIME=$(shell date +'%H%M%S') -static -nostdlib
 
 NAME = ToolOS
