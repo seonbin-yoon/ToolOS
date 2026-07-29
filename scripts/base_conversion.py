@@ -5,6 +5,9 @@ from dataclasses import dataclass
 from enum import Enum, auto
 
 
+class ArgNotFoundError(Exception):
+    pass
+
 class NumeralSystem(Enum):
     BIN = auto()
     OCT = auto()
@@ -31,8 +34,7 @@ class ConversionInfo:
 def main(args: list[str]):
     arg_len = len(args) - 1
     if arg_len < 1:
-        print("변환할 숫자가 1개 이상 입력되어야합니다.")
-        sys.exit(1)
+        raise ArgNotFoundError("변환할 숫자가 1개 이상 입력되어야합니다.")
 
     for i, value in enumerate(args[1:]):
         print("\033[2J\033[3J\033[H", end="")
@@ -40,7 +42,7 @@ def main(args: list[str]):
             info = convert_all(value)
             show_info(i + 1, arg_len, info)
         except ValueError as e:
-            print(f"{str(e)}")
+            print(f"[{i + 1}/{arg_len}] {str(e)}")
         message = "스페이스바를 제외한 아무 키나 눌러 다음으로 넘어갑니다.." \
             if i + 1 < arg_len else "스페이스를 제외한 키를 눌러 프로그램을 닫습니다.."
 
@@ -49,7 +51,7 @@ def main(args: list[str]):
 def convert_data_sizes(byte_value: int) -> \
         tuple[int, int, float, float, float, float]:
 
-    byte = abs(byte_value)
+    byte = byte_value
     bit = byte * 8
     kb = byte / 1024
     mb = byte / 1024 ** 2
@@ -155,8 +157,12 @@ if __name__ == "__main__":
     exit_code = 0
     try:
         main(sys.argv)
+    except ArgNotFoundError as e:
+        print(str(e))
+        exit_code = 1
     except KeyboardInterrupt:
         exit_code = 130
-    finally:
+
+    if not exit_code:
         print("\033[2J\033[3J\033[H", end="")
-        sys.exit(exit_code)
+    sys.exit(exit_code)
