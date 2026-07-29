@@ -16,11 +16,11 @@ C_VERSION = c23 # c89, c99, c11, c17, c23
 
 RM = rm -rf
 
-SRC_C = $(wildcard $(KERNEL)/*.c)
-SRC_S = $(wildcard $(KERNEL)/*.S)
+CFILES = $(wildcard $(KERNEL)/*.c)
+ASMFILES = $(wildcard $(KERNEL)/*.S)
 
-OBJS = $(patsubst $(KERNEL)/%.c, $(TMP)/%.o, $(SRC_C))
-OBJS += $(patsubst $(KERNEL)/%.S, $(TMP)/%.o, $(SRC_S))
+OBJS = $(patsubst $(KERNEL)/%.c, $(TMP)/%.o, $(CFILES))
+OBJS += $(patsubst $(KERNEL)/%.S, $(TMP)/%.o, $(ASMFILES))
 
 all: $(NAME).elf
 
