@@ -8,10 +8,10 @@
  *  
  */
 
-#include <bootinfo.h>
+#include <bootstruct.h>
 #include <types.h>
 #include <boot.h>
-#include <macro.h>
+#include <macros.h>
 
 #define ERROR(ret_code) (ret_code)
 

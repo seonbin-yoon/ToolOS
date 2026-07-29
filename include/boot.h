@@ -11,7 +11,7 @@
 #ifndef FUNC_H
 #define FUNC_H
 
-#include <bootinfo.h>
+#include <bootstruct.h>
 
 void success_print(struct toolos_graphics_map *graphics_map, bool is_success);
 int set_paging();
