@@ -10,20 +10,43 @@
 
 #include <bootinfo.h>
 #include <types.h>
-#include <func.h>
+#include <boot.h>
+#include <macro.h>
+
+#define ERROR(ret_code) (ret_code)
 
 void kernel_main(struct toolos_bootinfo_table *boot_info) {
-	success_print(boot_info, true);
+	i32 ret_code;
+	
+	ret_code = set_gdt();
+	if (ERROR(ret_code)) {
+		success_print(&boot_info->graphics_map, false);
+	}
+
+	HALT;
 }
 
-void success_print(struct toolos_bootinfo_table *boot_info, bool is_success) {
-	u32 *gop = (u32 *)boot_info->graphics_map.frame_buffer_base;
+int set_gdt() {
+	i32 ret_code = 0;
+
+	return ret_code;
+}
+
+int set_paging() {
+	i32 ret_code = 0;
+
+	return ret_code;
+}
+
+// TODO: Improve Logic
+void success_print(struct toolos_graphics_map *graphics_map, bool is_success) {
+	u32 *gop = (u32 *)graphics_map->frame_buffer_base;
 
 	if (is_success) {
-		for (u64 i = 0; i < boot_info->graphics_map.pixels_per_scan_line * 5; i++)
+		for (u64 i = 0; i < graphics_map->pixels_per_scan_line * 5; i++)
 			gop[i] = 0x00BFFF;
 	} else {
-		for (u64 i = 0; i < boot_info->graphics_map.pixels_per_scan_line * 5; i++)
+		for (u64 i = 0; i < graphics_map->pixels_per_scan_line * 5; i++)
 			gop[i] = 0xFF0000;
 	}
 }
