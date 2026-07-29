@@ -3,13 +3,13 @@
  *
  * Copyright (c) 2026 Seonbin Yoon
  * Project: ToolOS
- * File: type.h
+ * File: types.h
  * Description:
  *  
  */
 
-#ifndef TYPE_H
-#define TYPE_H
+#ifndef TYPES_H
+#define TYPES_H
 
 typedef unsigned long long u64;
 typedef unsigned int       u32;

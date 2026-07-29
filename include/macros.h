@@ -3,13 +3,13 @@
  *
  * Copyright (c) 2026 Seonbin Yoon
  * Project: ToolOS
- * File: macro.h
+ * File: macros.h
  * Description:
  *  
  */
 
-#ifndef MACRO_H
-#define MACRO_H
+#ifndef MACROS_H
+#define MACROS_H
 
 #define HALT do { __asm__ __volatile__ ("hlt"); } while(false)
 #define INSERT_REG_R15(x) do { __asm__ __volatile__ ("mov r15, %0": : "r"(x)); } while(false)

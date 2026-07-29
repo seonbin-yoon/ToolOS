@@ -3,13 +3,13 @@
  *
  * Copyright (c) 2026 Seonbin Yoon
  * Project: ToolOS
- * File: bootinfo.h
+ * File: bootstruct.h
  * Description:
  *  
  */
 
-#ifndef BOOTINFO_H
-#define BOOTINFO_H
+#ifndef BOOTSTRUCT_H
+#define BOOTSTRUCT_H
 
 #include <types.h>
 

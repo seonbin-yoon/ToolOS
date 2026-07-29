@@ -3,13 +3,13 @@
  *
  * Copyright (c) 2026 Seonbin Yoon
  * Project: ToolOS
- * File: func.h
+ * File: boot.h
  * Description:
  *  
  */
 
-#ifndef FUNC_H
-#define FUNC_H
+#ifndef BOOT_H
+#define BOOT_H
 
 #include <bootstruct.h>
 
