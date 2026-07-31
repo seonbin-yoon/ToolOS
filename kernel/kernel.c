@@ -9,18 +9,16 @@
  */
 
 #include <boot.h>
-#include <types.h>
 #include <macros.h>
 
 #define ERROR(ret_code) (ret_code)
 
 void kernel_main(struct toolos_bootinfo_table *boot_info) {
 	i32 ret_code;
-	
+
 	ret_code = set_gdt();
-	if (ERROR(ret_code)) {
+	if (ERROR(ret_code))
 		success_print(&boot_info->graphics_map, false);
-	}
 
 	HALT;
 }
@@ -40,12 +38,8 @@ int set_paging() {
 // TODO: Improve Logic
 void success_print(struct toolos_graphics_map *graphics_map, bool is_success) {
 	u32 *gop = (u32 *)graphics_map->frame_buffer_base;
+	u32 color = is_success ? 0x00BFFF : 0xFF0000;
 
-	if (is_success) {
-		for (u64 i = 0; i < graphics_map->pixels_per_scan_line * 5; i++)
-			gop[i] = 0x00BFFF;
-	} else {
-		for (u64 i = 0; i < graphics_map->pixels_per_scan_line * 5; i++)
-			gop[i] = 0xFF0000;
-	}
+	for (u64 i = 0; i < graphics_map->pixels_per_scan_line * 5; i++)
+		gop[i] = color;
 }
