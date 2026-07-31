@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 
 import sys
 from dataclasses import dataclass
@@ -43,8 +43,9 @@ def main(args: list[str]):
             show_info(i + 1, arg_len, info)
         except ValueError as e:
             print(f"[{i + 1}/{arg_len}] {str(e)}")
-        message = "스페이스바를 제외한 아무 키나 눌러 다음으로 넘어갑니다.." \
-            if i + 1 < arg_len else "스페이스를 제외한 키를 눌러 프로그램을 닫습니다.."
+        message = "스페이스를 제외한 아무 키나 눌러 다음으로 넘어갑니다.." \
+            if i + 1 < arg_len \
+            else "스페이스를 제외한 아무 키나 눌러 프로그램을 닫습니다.."
 
         input(f"\n{message}")
 
@@ -138,15 +139,15 @@ def show_info(num: int, total: int, info: ConversionInfo):
 
     if info.int_value is not None:
         print(
-            f"  - Bin  : {bin(info.int_value)}\n"
-            f"  - Oct  : {oct(info.int_value)}\n"
-            f"  - Dec  : {info.int_value}\n"
-            f"  - Hex  : {hex(info.int_value)}\n\n"
-            f"  - Bit  : {info.bit:,} bits\n"
-            f"  - Byte : {info.byte:,} B\n"
-            f"  - KB   : {info.kb:,.2f} KB\n"
-            f"  - MB   : {info.mb:,.6f} MB\n"
-            f"  - GB   : {info.gb:,.8f} GB\n"
+            f"  - Bin         : {bin(info.int_value)}\n"
+            f"  - Oct         : {oct(info.int_value)}\n"
+            f"  - Dec         : {info.int_value}\n"
+            f"  - Hex         : {hex(info.int_value).upper()}\n\n"
+            f"  - Bit         : {len(bin(info.int_value)[2:])} Bit\n"
+            f"  - Byte        : {info.byte:,} Byte\n"
+            f"  - KB          : {info.kb:,.2f} KB\n"
+            f"  - MB          : {info.mb:,.6f} MB\n"
+            f"  - GB          : {info.gb:,.8f} GB\n"
         )
     if info.hex_to_word:
         print(f"  - Hex -> Word : {info.hex_to_word}")
@@ -162,6 +163,7 @@ if __name__ == "__main__":
         exit_code = 1
     except KeyboardInterrupt:
         exit_code = 130
+        print()
 
     if not exit_code:
         print("\033[2J\033[3J\033[H", end="")
