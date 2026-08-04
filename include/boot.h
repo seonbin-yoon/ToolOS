@@ -14,7 +14,7 @@
 #include <bootstruct.h>
 
 void success_print(struct toolos_graphics_map *graphics_map, bool is_success);
-int set_paging();
-int set_gdt();
+i32 set_paging();
+i32 set_gdt();
 
 #endif
