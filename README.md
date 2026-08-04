@@ -1,51 +1,28 @@
-# 🔧 ToolOS: The Privacy-by-Design Operating System
+# ToolOS Source Tree
 
-**ToolOS** is an operating system that is being developed with the goal of **truly protecting and respecting users' privacy**, rather than a complex operating system that takes away existing users' information.
+**ToolOS** is an operating system currently under development **that prioritizes security and user privacy above all else**.
 
----
-
-## Core Philosophies
-
-### 1. Safety
-* The ultimate goal of **this OS is to have a stable and smooth OS with no BSODs**.
-
-### 2. Liberty
-* Anyone can **modify the code and change it as they wish** (however, the authenticity mark will be removed).
-
-### 3. Security
-* **You don't have to worry about privacy invasion.**
-
----
+## Special Notes
+* ToolOS is currently being developed exclusively for **64-bit CPUs**.
+* Development is currently based on the intel® i7-9700 CPU.
+* If you need to compile the OS, you should refer to this. This project uses gcc as the compiler, the C23 standard, and nasm as the assembler.
+* **The `boot` folder is associated with the UEFI (EDK2) bootloader.** If you want to compile the bootloader, run `git clone https://github.com/seonbin-yoon/edk2-setup-release` and then run the `installer` file inside the folder to set up the compilation environment.
 
 ## Core technologies
 
 ### 1. KCP (Kernel Camera Protection)
-* KCP is a kernel-level security architecture that maintains direct governance over the camera data bus to enforce rigorous process access control. It was engineered to fundamentally eradicate threats such as webcam hijacking, unauthorized facial leaks, and physical privacy breaches—providing a definitive safety net for VTubers and all privacy-conscious users.
+* KCP is a security architecture in which the kernel isolates the camera data bus, allowing access only to authorized processes. This architecture was designed to eliminate threats such as webcam hijacking, unauthorized leakage of facial information, and physical privacy violations, and we hope it will help users who are particularly concerned about the leakage of their facial images, such as VTubers.
 
 ### 2. SFS (Secure File System)
-* SFS is a next-generation file system architecture that supports dynamic partition resizing, selective-area encryption, and seamless file system updates. By strategically distributing file tables across specific sectors, it ensures maximum resilience against complete file system corruption.
+* SFS is designed to support dynamic partition resizing, selective-area encryption, and file system updates while the system is booted. By strategically distributing data across specific sectors on the node, it prevents the loss of all data due to damage to a single section.
+* Adopts Drive Letter Assignment with a Forward-Slash (/) path separator (e.g., C:/ToolOS/).
 
 ### 3. AAPI (Authentication API)
-* One of the major hurdles for OS adoption is the lack of standardization, which we've observed in various Linux distributions. This fragmentation makes it difficult for game developers to provide consistent support. ToolOS addresses this by providing an Authentication API that verifies the system's integrity (Genuine vs. Modified/Ported). This allows developers to focus their support on verified environments, ensuring a stable and secure experience for both creators and users.
-
----
-
-## System Overview
-* **Architecture:** A purely independent OS—**not** based on Unix, Linux, or Windows.
-* **File System**: Adopts Drive Letter Assignment with a Forward-Slash (/) path separator (e.g., C:/ToolOS/).
-* **Contributions:** We welcome all comments that align with our three core values: Safety, Liberty, and Security.
-
----
+* One of the major obstacles to adopting open-source operating systems is the lack of standardization, as seen in the variety of Linux distributions. This fragmentation makes it difficult for developers to provide consistent support. ToolOS addresses this issue by providing an authentication API that verifies the integrity of the system (genuine vs. modified or ported versions). This allows developers to focus their support on verified environments, ensuring a stable and secure experience for both creators and users.
 
 ## Project Roadmap
 * **Project Started:** January 9, 2026
 * **Developer Age at Launch:** 14 Years Old
 
-* **Goals Achieved**
-* **UEFI bootloader**: **Yes**
-* **Hybrid Kernel**: No
-* **KCP(Kernel Camera Protection) Technology** Development: No
-* **SFS(Secure File System) Technology** Development: No
-* **AAPI(Authentication API)** Development: No
-
----
+## Contributions
+* I welcome feedback. If you’d like to provide feedback, please contact me at seonbin.yoon0@gmail.com.
