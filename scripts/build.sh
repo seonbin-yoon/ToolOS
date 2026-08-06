@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 # global settings
 QEMU_ROOT=${HOME}/run-ovmf
