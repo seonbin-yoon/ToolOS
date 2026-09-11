@@ -2,6 +2,9 @@
 build/
 test/
 
+boot/.settings/ToolOS.dsc
+boot/.settings/ToolOS.inf
+
 global.cfg
 compile_commands.json
 ToolOS.elf

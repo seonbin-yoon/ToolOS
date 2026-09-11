@@ -7,15 +7,6 @@
   ENTRY_POINT                    = UefiMain
 
 [Sources]
-  acpi.c
-  create_bootinfo_table.c
-  graphics_out_protocol.c
-  include/ELF.h
-  include/InfoTable.h
-  include/TBL.h
-  kernel_load.c
-  main.c
-  memory.c
 
 [Packages]
   MdePkg/MdePkg.dec
