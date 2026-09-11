@@ -5,8 +5,8 @@
  * Project: ToolOS
 */
 
-#ifndef TBL_H
-#define TBL_H
+#ifndef MAIN_H
+#define MAIN_H
 
 #include <Uefi.h>
 #include <Library/UefiBootServicesTableLib.h>
@@ -17,7 +17,7 @@
 #include <Protocol/SimpleFileSystem.h>
 #include <Protocol/LoadedImage.h>
 
-#include <InfoTable.h>
+#include <bootinfo.h>
 #include <ELF.h>
 
 #define CPU_HALT \
