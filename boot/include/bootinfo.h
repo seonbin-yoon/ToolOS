@@ -5,8 +5,10 @@
  * Project: ToolOS
 */
 
-#ifndef INFOTABLE_H
-#define INFOTABLE_H
+#ifndef BOOTINFO_H
+#define BOOTINFO_H
+
+#include <Uefi.h>
 
 #pragma pack(1)
 // 8 + 1 + 6 + 1 + 4 + 4 + 8 + 1 + 3 = 36byte
