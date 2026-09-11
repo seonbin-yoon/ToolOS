@@ -6,7 +6,9 @@ def get_source_file_lists(source_dirs: list[Path]) -> list[Path]:
     found_source_files: list[Path] = []
     for source_dir in source_dirs:
         if not source_dir.exists():
-            raise FileNotFoundError(f"에러: {source_dir}은 존재하지 않는 경로입니다.")
+            raise FileNotFoundError(
+                f"source.py: {source_dir} is a path that does not exist."
+            )
 
         base_dir = source_dir.resolve()
 
