@@ -1,0 +1,82 @@
+/*
+ * SPDX-License-Identifier: GPL-2.0-only
+ *
+ * Copyright (c) 2026 Seonbin Yoon
+ * Project: ToolOS
+*/
+
+#ifndef TBL_H
+#define TBL_H
+
+#include <Uefi.h>
+#include <Library/UefiBootServicesTableLib.h>
+#include <Library/UefiLib.h>
+#include <Library/BaseMemoryLib.h>
+#include <Guid/Acpi.h>
+#include <Guid/FileInfo.h>
+#include <Protocol/SimpleFileSystem.h>
+#include <Protocol/LoadedImage.h>
+
+#include <InfoTable.h>
+#include <ELF.h>
+
+#define CPU_HALT \
+	do { __asm__ __volatile__ ("cli; hlt"); } while (0)
+
+typedef VOID (*GoToKernel)(TOOLOS_BOOTINFO_TABLE *BootInfo);
+
+EFI_STATUS
+(CreateInfoTable)(
+	IN OUT TOOLOS_BOOTINFO_TABLE **Table_Pointer
+);
+
+EFI_STATUS
+(GetMemoryInfo)(
+	IN TOOLOS_BOOTINFO_TABLE *BootInfo
+);
+
+EFI_STATUS
+(GetACPIInfo)(
+	IN TOOLOS_BOOTINFO_TABLE *BootInfo
+);
+
+EFI_STATUS
+(GetGOPInfo)(
+	IN TOOLOS_BOOTINFO_TABLE *BootInfo
+);
+
+EFI_STATUS
+(OpenKernelFile)(
+	IN EFI_HANDLE BootLoaderHandle,
+	IN CHAR16 *FileName,
+	IN OUT EFI_FILE_PROTOCOL **File
+);
+
+EFI_STATUS
+(ValidationELFHeader)(
+	IN EFI_FILE_PROTOCOL *File,
+	IN BOOLEAN IsBigEndian
+);
+
+EFI_STATUS
+(GetKernelFileSize)(
+	EFI_FILE_PROTOCOL *File,
+	UINT64 *SizeBuffer
+);
+
+EFI_STATUS
+(LoadKernelFile)(
+	TOOLOS_BOOTINFO_TABLE *BootInfo,
+	EFI_FILE_PROTOCOL *File,
+	EFI_PHYSICAL_ADDRESS LoadAddress,
+	UINT64 Size
+);
+
+EFI_STATUS
+(CloseKernelFile)(
+	EFI_FILE_PROTOCOL *File
+);
+
+extern const CHAR8 TOOLOS_INFOTABLE_Signature[16];
+
+#endif
