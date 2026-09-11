@@ -10,13 +10,13 @@
 #define ELF_MAGIC_NUM 0x464C457F
 #define PT_LOAD 1
 
-EFI_STATUS OpenKernelFile(IN EFI_HANDLE BootLoaderHandle, IN CHAR16 *FileName, IN OUT EFI_FILE_PROTOCOL **File) {
+EFI_STATUS OpenKernelFile(IN EFI_HANDLE ImageHandle, IN CHAR16 *FileName, IN OUT EFI_FILE_PROTOCOL **File) {
 	EFI_STATUS Status;
 	EFI_LOADED_IMAGE *BootLoaderInfo = NULL;
 	EFI_SIMPLE_FILE_SYSTEM_PROTOCOL *FileSystem = NULL;
 	EFI_FILE_PROTOCOL *Root = NULL;
 
-	if (BootLoaderHandle == NULL || FileName == NULL || File == NULL) {
+	if (ImageHandle == NULL || FileName == NULL || File == NULL) {
 		Status = EFI_INVALID_PARAMETER;
 		goto out;
 	}
@@ -24,7 +24,7 @@ EFI_STATUS OpenKernelFile(IN EFI_HANDLE BootLoaderHandle, IN CHAR16 *FileName, I
 	*File = NULL;
 
 	Status = gBS->HandleProtocol(
-		BootLoaderHandle,
+		ImageHandle,
 		&gEfiLoadedImageProtocolGuid,
 		(VOID **)&BootLoaderInfo
 	);

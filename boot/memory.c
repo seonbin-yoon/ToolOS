@@ -22,7 +22,7 @@ EFI_STATUS GetMemoryInfo(IN TOOLOS_BOOTINFO_TABLE* BootInfo) {
 	UINT64 ToolOSMMapSize = 0;
 	EFI_MEMORY_DESCRIPTOR *MPTR = NULL;
 
-	if (BootInfo == NULL || CompareMem(BootInfo->Signature, TOOLOS_INFOTABLE_Signature, 16) != 0) {
+	if (BootInfo == NULL || CompareMem(BootInfo->Signature, BootInfo_Signature, 16) != 0) {
 		Status = EFI_INVALID_PARAMETER;
 		goto out;
 	}
