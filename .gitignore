@@ -1,0 +1,7 @@
+.vscode/
+build/
+test/
+
+global.cfg
+compile_commands.json
+ToolOS.elf
