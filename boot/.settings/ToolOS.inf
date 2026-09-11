@@ -1,0 +1,30 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BootLoader
+  FILE_GUID                      = B452D011-0B9F-44F7-9ABF-D157F3C106FC
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 0.0.1
+  ENTRY_POINT                    = UefiMain
+
+[Sources]
+  acpi.c
+  create_bootinfo_table.c
+  graphics_out_protocol.c
+  include/ELF.h
+  include/InfoTable.h
+  include/TBL.h
+  kernel_load.c
+  main.c
+  memory.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+
+[LibraryClasses]
+  UefiApplicationEntryPoint
+  UefiLib
+  PcdLib
+ 
+[Protocols]
+  gEfiLoadedImageProtocolGuid
