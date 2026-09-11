@@ -3,12 +3,10 @@
  *
  * Copyright (c) 2026 Seonbin Yoon
  * Project: ToolOS
- * File: KernelLoad.c
- * Description:
- *   It is responsible for kernel loading, addressing, and load preparation.
- */
+*/
 
-#include "TBL.h"
+#include <main.h>
+
 #define ELF_MAGIC_NUM 0x464C457F
 #define PT_LOAD 1
 

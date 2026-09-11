@@ -3,12 +3,9 @@
  *
  * Copyright (c) 2026 Seonbin Yoon
  * Project: ToolOS
- * File: InfoTable.c
- * Description:
- *   Creates and returns a structure that the kernel can read.
- */
+*/
 
-#include "TBL.h"
+#include <main.h>
 
 const CHAR8 TOOLOS_INFOTABLE_Signature[16] = {"TOOLOS BOOTINFO"};
 

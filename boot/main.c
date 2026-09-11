@@ -3,12 +3,9 @@
  *
  * Copyright (c) 2026 Seonbin Yoon
  * Project: ToolOS
- * File: BootLoader.c
- * Description:
- *   This is the main bootloader for ToolOS
- */
+*/
 
-#include "TBL.h"
+#include <main.h>
 
 EFI_STATUS EFIAPI UefiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable) {
 	EFI_STATUS Status;

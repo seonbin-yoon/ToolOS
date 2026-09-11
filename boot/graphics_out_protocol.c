@@ -3,12 +3,9 @@
  *
  * Copyright (c) 2026 Seonbin Yoon
  * Project: ToolOS
- * File: GraphicsOutProtocol.c
- * Description:
- *   Retrieving GOP information.
- */
+*/
 
-#include "TBL.h"
+#include <main.h>
 
 EFI_STATUS GetGOPInfo(IN TOOLOS_BOOTINFO_TABLE* BootInfo) {
 	EFI_STATUS Status;
