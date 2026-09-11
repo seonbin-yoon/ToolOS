@@ -16,6 +16,7 @@
 #include <Guid/FileInfo.h>
 #include <Protocol/SimpleFileSystem.h>
 #include <Protocol/LoadedImage.h>
+#include <IndustryStandard/Acpi66.h>
 
 #include <bootinfo.h>
 #include <ELF.h>

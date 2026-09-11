@@ -9,21 +9,7 @@
 #define BOOTINFO_H
 
 #include <Uefi.h>
-
-#pragma pack(1)
-// 8 + 1 + 6 + 1 + 4 + 4 + 8 + 1 + 3 = 36byte
-typedef struct {
-	CHAR8  Signature[8];
-	UINT8  Checksum;
-	CHAR8  OEMID[6];
-	UINT8  Revision;
-	UINT32 RsdtAddress;
-	UINT32 Length;
-	UINT64 XsdtAddress;
-	UINT8  ExtendedChecksum;
-	UINT8  Reserved[3];
-} ACPI_RSDP_TABLE;
-#pragma pack()
+#include <IndustryStandard/Acpi66.h>
 
 #pragma pack(1)
 // 8 + 8 + 8 + 8 = 32byte
@@ -74,7 +60,7 @@ typedef struct {
 	TOOLOS_MEMORY_MAPINFO MemoryMapInfo;
 	TOOLOS_MEMORY_MAP*    MemoryMap;
 	TOOLOS_GRAPHICS_MAP   GraphicsMap;
-	ACPI_RSDP_TABLE*      RSDPTable;
+	EFI_ACPI_6_6_ROOT_SYSTEM_DESCRIPTION_POINTER* RSDPTable;
 	UINT8                 Reserved[7];
 	BOOLEAN               SafeWritten;
 } TOOLOS_BOOTINFO_TABLE;

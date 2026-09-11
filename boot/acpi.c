@@ -7,8 +7,6 @@
 
 #include <main.h>
 
-const CHAR8 ACPI_TABLE_Signature[8] = {'R', 'S', 'D', ' ', 'P', 'T', 'R', ' '};
-
 EFI_STATUS GetACPIInfo(IN TOOLOS_BOOTINFO_TABLE *BootInfo) {
 	EFI_STATUS Status;
 
@@ -19,7 +17,7 @@ EFI_STATUS GetACPIInfo(IN TOOLOS_BOOTINFO_TABLE *BootInfo) {
 
 	for (UINTN i = 0; i < gST->NumberOfTableEntries; i++) {
 		if (CompareGuid(&gST->ConfigurationTable[i].VendorGuid, &gEfiAcpi20TableGuid)) {
-			BootInfo->RSDPTable = (ACPI_RSDP_TABLE *)gST->ConfigurationTable[i].VendorTable;
+			BootInfo->RSDPTable = (EFI_ACPI_6_6_ROOT_SYSTEM_DESCRIPTION_POINTER *)gST->ConfigurationTable[i].VendorTable;
 			Status = EFI_SUCCESS;
 			goto out;
 		}
