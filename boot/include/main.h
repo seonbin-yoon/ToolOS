@@ -27,35 +27,35 @@ typedef VOID (*GoToKernel)(TOOLOS_BOOTINFO_TABLE *BootInfo);
 
 EFI_STATUS
 (CreateInfoTable)(
-	IN OUT TOOLOS_BOOTINFO_TABLE **Table_Pointer
+	TOOLOS_BOOTINFO_TABLE **Table_Pointer
 );
 
 EFI_STATUS
 (GetMemoryInfo)(
-	IN TOOLOS_BOOTINFO_TABLE *BootInfo
+	TOOLOS_BOOTINFO_TABLE *BootInfo
 );
 
 EFI_STATUS
 (GetACPIInfo)(
-	IN TOOLOS_BOOTINFO_TABLE *BootInfo
+	TOOLOS_BOOTINFO_TABLE *BootInfo
 );
 
 EFI_STATUS
 (GetGOPInfo)(
-	IN TOOLOS_BOOTINFO_TABLE *BootInfo
+	TOOLOS_BOOTINFO_TABLE *BootInfo
 );
 
 EFI_STATUS
 (OpenKernelFile)(
-	IN EFI_HANDLE BootLoaderHandle,
-	IN CHAR16 *FileName,
-	IN OUT EFI_FILE_PROTOCOL **File
+	EFI_HANDLE BootLoaderHandle,
+	CHAR16 *FileName,
+	EFI_FILE_PROTOCOL **File
 );
 
 EFI_STATUS
 (ValidationELFHeader)(
-	IN EFI_FILE_PROTOCOL *File,
-	IN BOOLEAN IsBigEndian
+	EFI_FILE_PROTOCOL *File,
+	BOOLEAN IsBigEndian
 );
 
 EFI_STATUS
