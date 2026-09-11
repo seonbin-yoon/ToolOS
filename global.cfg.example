@@ -1,0 +1,15 @@
+[global]
+BUILD_THREADS=auto
+
+[path]
+QEMU_ROOT=~/qemu
+QEMU_DISK_ROOT=~/qemu/hda-contents
+OS_SRC=~/ToolOS
+EDK2_SRC=~/edk2
+
+[qemu]
+QEMU_MEM=2G
+QEMU_CPU_CORE=1
+
+[edk2]
+BUILD_OPTIONS="DEBUG" # RELEASE / DEBUG
