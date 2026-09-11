@@ -27,7 +27,7 @@ typedef VOID (*GoToKernel)(TOOLOS_BOOTINFO_TABLE *BootInfo);
 
 EFI_STATUS
 (CreateInfoTable)(
-	TOOLOS_BOOTINFO_TABLE **Table_Pointer
+	TOOLOS_BOOTINFO_TABLE **buffer
 );
 
 EFI_STATUS
@@ -77,6 +77,6 @@ EFI_STATUS
 	EFI_FILE_PROTOCOL *File
 );
 
-extern const CHAR8 TOOLOS_INFOTABLE_Signature[16];
+extern const CHAR8 BootInfo_Signature[16];
 
 #endif
