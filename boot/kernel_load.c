@@ -10,7 +10,7 @@
 #define ELF_MAGIC_NUM 0x464C457F
 #define PT_LOAD 1
 
-EFI_STATUS OpenKernelFile(IN EFI_HANDLE ImageHandle, IN CHAR16 *FileName, IN OUT EFI_FILE_PROTOCOL **File) {
+EFI_STATUS OpenKernelFile(EFI_HANDLE ImageHandle, CHAR16 *FileName, EFI_FILE_PROTOCOL **File) {
 	EFI_STATUS Status;
 	EFI_LOADED_IMAGE *BootLoaderInfo = NULL;
 	EFI_SIMPLE_FILE_SYSTEM_PROTOCOL *FileSystem = NULL;
@@ -61,7 +61,7 @@ out:
 	return Status;
 }
 
-EFI_STATUS ValidationELFHeader(IN EFI_FILE_PROTOCOL *File, IN BOOLEAN IsBigEndian) {
+EFI_STATUS ValidationELFHeader(EFI_FILE_PROTOCOL *File, BOOLEAN IsBigEndian) {
 	EFI_STATUS Status;
 	ELFHeader EhdrReader;
 	UINTN EhdrSize = sizeof(ELFHeader);

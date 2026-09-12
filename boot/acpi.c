@@ -7,7 +7,7 @@
 
 #include <main.h>
 
-EFI_STATUS GetACPIInfo(IN TOOLOS_BOOTINFO_TABLE *BootInfo) {
+EFI_STATUS GetACPIInfo(TOOLOS_BOOTINFO_TABLE *BootInfo) {
 	EFI_STATUS Status;
 
 	if (BootInfo == NULL || CompareMem(BootInfo->Signature, BootInfo_Signature, 16) != 0) {

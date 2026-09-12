@@ -10,7 +10,7 @@
 EFI_MEMORY_DESCRIPTOR *MemoryMap = NULL;
 VOID *InfoMemoryMap = NULL;
 
-EFI_STATUS GetMemoryInfo(IN TOOLOS_BOOTINFO_TABLE* BootInfo) {
+EFI_STATUS GetMemoryInfo(TOOLOS_BOOTINFO_TABLE* BootInfo) {
 	EFI_STATUS Status;
 
 	UINTN MemoryMapSize = 0;
