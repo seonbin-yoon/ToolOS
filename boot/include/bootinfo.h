@@ -9,8 +9,9 @@
 #define BOOTINFO_H
 
 #include <Uefi.h>
-
 #pragma pack(1)
+
+// 8 + 1 + 6 + 1 + 4 + 4 + 8 + 1 + 3 = 36 byte
 typedef struct {
 	UINT64    Signature;
 	UINT8     Checksum;
@@ -22,9 +23,7 @@ typedef struct {
 	UINT8     ExtendedChecksum;
 	UINT8     Reserved[3];
 } RSDP_TABLE;
-#pragma pack()
 
-#pragma pack(1)
 // 8 + 8 + 8 + 8 = 32byte
 typedef struct {
 	UINT64 Type;
@@ -32,9 +31,7 @@ typedef struct {
 	UINT64 NumberOfPages;
 	UINT64 Attribute;
 } TOOLOS_MEMORY_MAP;
-#pragma pack()
 
-#pragma pack(1)
 // 8 + 8 + 8 = 24byte
 typedef struct {
 	UINT64 MemoryMapNums;
@@ -42,7 +39,7 @@ typedef struct {
 	UINT64 TotalMemorySize;
 } TOOLOS_MEMORY_MAPINFO;
 
-#pragma pack(1)
+
 // 4 + 4 + 4 + 4 = 16byte
 typedef struct {
 	UINT32 RedMask;
@@ -50,9 +47,7 @@ typedef struct {
 	UINT32 BlueMask;
 	UINT32 ReservedMask;
 } TOOLOS_PIXEL_BITMASK;
-#pragma pack()
 
-#pragma pack(1)
 // 8 + 8 + 4 + 4 + 4 + 4 + 16 = 48byte
 typedef struct {
 	EFI_PHYSICAL_ADDRESS    FrameBufferBase;
@@ -63,10 +58,8 @@ typedef struct {
 	UINT32                  PixelsPerScanLine;
 	TOOLOS_PIXEL_BITMASK    PixelInformation;
 } TOOLOS_GRAPHICS_MAP;
-#pragma pack()
 
 // 16 + 8 + 24 + 8 + 48 + 8 + 7 + 1 = 120byte
-#pragma pack(1)
 typedef struct {
 	CHAR8                 Signature[16];
 	EFI_PHYSICAL_ADDRESS  KernelStartAddress;
@@ -77,6 +70,6 @@ typedef struct {
 	UINT8                 Reserved[7];
 	BOOLEAN               SafeWritten;
 } TOOLOS_BOOTINFO_TABLE;
-#pragma pack()
 
+#pragma pack()
 #endif

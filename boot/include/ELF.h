@@ -9,10 +9,9 @@
 #define ELF_H
 
 #include <Uefi.h>
+#pragma pack(1)
 
 // 16 + 2 + 2 + 4 + 8 + 8 + 8 + 4 + 2 + 2 + 2 + 2 + 2 + 2 = 64byte
-// ELF Header
-#pragma pack(1)
 typedef struct {
 	CHAR8  e_ident[16];
 	UINT16 e_type;
@@ -29,11 +28,8 @@ typedef struct {
 	UINT16 e_shnum;
 	UINT16 e_shstrndx;
 } ELFHeader;
-#pragma pack()
 
 // 4 + 4 + 8 + 8 + 8 + 8 + 8 + 8 = 56byte
-// ELF Program Header
-#pragma pack(1)
 typedef struct {
 	UINT32 p_type;
 	UINT32 p_flags;
@@ -44,6 +40,6 @@ typedef struct {
 	UINT64 p_memsz;
 	UINT64 p_align;
 } ELFProgramHeader;
-#pragma pack()
 
+#pragma pack()
 #endif
