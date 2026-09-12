@@ -17,12 +17,11 @@
 #include <Protocol/SimpleFileSystem.h>
 #include <Protocol/LoadedImage.h>
 #include <IndustryStandard/Acpi66.h>
-
 #include <bootinfo.h>
 #include <ELF.h>
 
 #define CPU_HALT \
-	do { __asm__ __volatile__ ("cli; hlt"); } while (0)
+	do { __asm__ volatile ("msr daifset, #0xf\n 1:\n\t wfi\n\t b 1b"); } while (FALSE)
 
 typedef VOID (*GoToKernel)(TOOLOS_BOOTINFO_TABLE *BootInfo);
 
