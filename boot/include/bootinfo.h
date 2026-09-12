@@ -22,7 +22,7 @@ typedef struct {
 	UINT64    XsdtAddress;
 	UINT8     ExtendedChecksum;
 	UINT8     Reserved[3];
-} RSDP_TABLE;
+} ACPI_RSDP_TABLE;
 
 // 8 + 8 + 8 + 8 = 32byte
 typedef struct {
@@ -64,9 +64,9 @@ typedef struct {
 	CHAR8                 Signature[16];
 	EFI_PHYSICAL_ADDRESS  KernelStartAddress;
 	TOOLOS_MEMORY_MAPINFO MemoryMapInfo;
-	TOOLOS_MEMORY_MAP*    MemoryMap;
+	TOOLOS_MEMORY_MAP     *MemoryMap;
 	TOOLOS_GRAPHICS_MAP   GraphicsMap;
-	RSDP_TABLE*           RSDPTable;
+	ACPI_RSDP_TABLE       *RSDPTable;
 	UINT8                 Reserved[7];
 	BOOLEAN               SafeWritten;
 } TOOLOS_BOOTINFO_TABLE;

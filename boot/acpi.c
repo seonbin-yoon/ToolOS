@@ -17,7 +17,7 @@ EFI_STATUS GetACPIInfo(TOOLOS_BOOTINFO_TABLE *BootInfo) {
 
 	for (UINTN i = 0; i < gST->NumberOfTableEntries; i++) {
 		if (CompareGuid(&gST->ConfigurationTable[i].VendorGuid, &gEfiAcpi20TableGuid)) {
-			BootInfo->RSDPTable = (RSDP_TABLE *)gST->ConfigurationTable[i].VendorTable;
+			BootInfo->RSDPTable = (ACPI_RSDP_TABLE *)gST->ConfigurationTable[i].VendorTable;
 			Status = EFI_SUCCESS;
 			goto out;
 		}
