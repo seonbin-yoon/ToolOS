@@ -7,10 +7,10 @@
 
 #include <main.h>
 
-EFI_MEMORY_DESCRIPTOR *MemoryMap = NULL;
-VOID *InfoMemoryMap = NULL;
-
 EFI_STATUS GetMemoryInfo(TOOLOS_BOOTINFO_TABLE* BootInfo) {
+	static EFI_MEMORY_DESCRIPTOR *MemoryMap = NULL;
+	static VOID *InfoMemoryMap = NULL;
+	
 	EFI_STATUS Status;
 
 	UINTN MemoryMapSize = 0;
