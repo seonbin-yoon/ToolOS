@@ -14,7 +14,7 @@ EFI_STATUS CreateInfoTable(TOOLOS_BOOTINFO_TABLE **buffer) {
 	UINT64 TableSize = sizeof(TOOLOS_BOOTINFO_TABLE);
 	TOOLOS_BOOTINFO_TABLE *Temp = NULL;
 
-	if (buffer == NULL) {
+	if (!buffer) {
 		Status = EFI_INVALID_PARAMETER;
 		goto out;
 	}

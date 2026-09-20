@@ -9,6 +9,10 @@
 #define ELF_H
 
 #include <Uefi.h>
+
+#define ELF_MAGIC_NUM 0x464C457F
+#define PT_LOAD 1
+
 #pragma pack(1)
 
 // 16 + 2 + 2 + 4 + 8 + 8 + 8 + 4 + 2 + 2 + 2 + 2 + 2 + 2 = 64byte

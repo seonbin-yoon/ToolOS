@@ -11,7 +11,7 @@ EFI_STATUS GetGOPInfo(TOOLOS_BOOTINFO_TABLE* BootInfo) {
 	EFI_STATUS Status;
 	EFI_GRAPHICS_OUTPUT_PROTOCOL* GOP = NULL;
 	
-	if (BootInfo == NULL || CompareMem(BootInfo->Signature, BootInfo_Signature, 16) != 0) {
+	if (!BootInfo || CompareMem(BootInfo->Signature, BootInfo_Signature, 16)) {
 		Status = EFI_INVALID_PARAMETER;
 		goto out;
 	}

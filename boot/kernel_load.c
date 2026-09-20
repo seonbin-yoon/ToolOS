@@ -7,21 +7,16 @@
 
 #include <main.h>
 
-#define ELF_MAGIC_NUM 0x464C457F
-#define PT_LOAD 1
-
-EFI_STATUS OpenKernelFile(EFI_HANDLE ImageHandle, CHAR16 *FileName, EFI_FILE_PROTOCOL **File) {
+EFI_STATUS OpenKernelFile(EFI_HANDLE ImageHandle, CHAR16 *KernelFileName, EFI_FILE_PROTOCOL **KernelFile) {
 	EFI_STATUS Status;
 	EFI_LOADED_IMAGE *BootLoaderInfo = NULL;
 	EFI_SIMPLE_FILE_SYSTEM_PROTOCOL *FileSystem = NULL;
 	EFI_FILE_PROTOCOL *Root = NULL;
 
-	if (ImageHandle == NULL || FileName == NULL || File == NULL) {
+	if (!ImageHandle || !KernelFileName || !KernelFile) {
 		Status = EFI_INVALID_PARAMETER;
 		goto out;
 	}
-
-	*File = NULL;
 
 	Status = gBS->HandleProtocol(
 		ImageHandle,
@@ -48,8 +43,8 @@ EFI_STATUS OpenKernelFile(EFI_HANDLE ImageHandle, CHAR16 *FileName, EFI_FILE_PRO
 
 	Status = Root->Open(
 		Root,
-		File,
-		FileName,
+		KernelFile,
+		KernelFileName,
 		EFI_FILE_MODE_READ,
 		0
 	);
@@ -61,13 +56,13 @@ out:
 	return Status;
 }
 
-EFI_STATUS ValidationELFHeader(EFI_FILE_PROTOCOL *File, BOOLEAN IsBigEndian) {
+EFI_STATUS ValidationKernelFile(EFI_FILE_PROTOCOL *File, BOOLEAN IsBigEndian) {
 	EFI_STATUS Status;
 	ELFHeader EhdrReader;
 	UINTN EhdrSize = sizeof(ELFHeader);
 	UINT64 EphdrSize = sizeof(ELFProgramHeader);
 
-	if (File == NULL) {
+	if (!File) {
 		Status = EFI_INVALID_PARAMETER;
 		goto out;
 	}
@@ -114,7 +109,7 @@ EFI_STATUS GetKernelFileSize(EFI_FILE_PROTOCOL *File, UINT64 *SizeBuffer) {
 	UINT64 MinSegAddr = -1;
 	UINT64 MaxSegAddr = 0;
 
-	if (File == NULL || SizeBuffer == NULL) {
+	if (!File || !SizeBuffer) {
 		Status = EFI_INVALID_PARAMETER;
 		goto out;
 	}
@@ -191,7 +186,7 @@ EFI_STATUS LoadKernelFile(TOOLOS_BOOTINFO_TABLE *BootInfo, EFI_FILE_PROTOCOL *Fi
 	UINT64 MinSegAddr = MAX_UINT64;
 	UINT64 ReadOffset = 0;
 
-	if (File == NULL || !LoadAddress || !MemSize) {
+	if (!File || !LoadAddress || !MemSize) {
 		Status = EFI_INVALID_PARAMETER;
 		goto out;
 	}

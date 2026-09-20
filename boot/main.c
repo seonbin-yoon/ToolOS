@@ -40,7 +40,7 @@ EFI_STATUS EFIAPI UefiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable
 		CPU_HALT;
 	}
 
-	Status = ValidationELFHeader(KernelFile, FALSE);
+	Status = ValidationKernelFile(KernelFile, FALSE);
 	if (EFI_ERROR(Status)) {
 		Print(L"Failed to Validation Kernel File. | Error code: %r", Status);
 		CPU_HALT;

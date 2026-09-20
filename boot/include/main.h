@@ -53,7 +53,7 @@ EFI_STATUS
 );
 
 EFI_STATUS
-(ValidationELFHeader)(
+(ValidationKernelFile)(
 	EFI_FILE_PROTOCOL *File,
 	BOOLEAN IsBigEndian
 );
