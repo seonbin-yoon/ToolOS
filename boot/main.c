@@ -40,7 +40,7 @@ EFI_STATUS EFIAPI UefiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable
 		CPU_HALT;
 	}
 
-	Status = ValidationKernelFile(KernelFile, FALSE);
+	Status = ValidationKernelFile(KernelFile);
 	if (EFI_ERROR(Status)) {
 		Print(L"Failed to Validation Kernel File. | Error code: %r", Status);
 		CPU_HALT;
@@ -52,7 +52,7 @@ EFI_STATUS EFIAPI UefiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable
 		CPU_HALT;
 	}
 
-	Status = LoadKernelFile(BootInfo, KernelFile, 0x100000, KernelMemSize);
+	Status = LoadKernelFile(BootInfo, KernelFile, 0x41000000, KernelMemSize);
 	if (EFI_ERROR(Status)) {
 		Print(L"ERROR to Load Kernel File. | Error code: %r", Status);
 		CPU_HALT;

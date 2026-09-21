@@ -56,11 +56,12 @@ out:
 	return Status;
 }
 
-EFI_STATUS ValidationKernelFile(EFI_FILE_PROTOCOL *File, BOOLEAN IsBigEndian) {
+EFI_STATUS ValidationKernelFile(EFI_FILE_PROTOCOL *File) {
 	EFI_STATUS Status;
-	ELFHeader EhdrReader;
+	ELFHeader Ehdr;
 	UINTN EhdrSize = sizeof(ELFHeader);
-	UINT64 EphdrSize = sizeof(ELFProgramHeader);
+	UINTN EphdrSize = sizeof(ELFProgramHeader);
+	CHAR8 elf_magic_num[ELF_MAGIC_NUM_LEN] = {0x7f, 'E', 'L', 'F'};
 
 	if (!File) {
 		Status = EFI_INVALID_PARAMETER;
@@ -70,22 +71,32 @@ EFI_STATUS ValidationKernelFile(EFI_FILE_PROTOCOL *File, BOOLEAN IsBigEndian) {
 	Status = File->Read(
 		File,
 		&EhdrSize,
-		&EhdrReader
+		&Ehdr
 	);
 	if (EFI_ERROR(Status))
 		goto rollback_out;
 
-	if (*(UINT32 *)EhdrReader.e_ident != ELF_MAGIC_NUM) {
+	if (CompareMem(Ehdr.e_ident, &elf_magic_num, ELF_MAGIC_NUM_LEN)) {
 		Status = EFI_UNSUPPORTED;
 		goto rollback_out;
 	}
 
-	if (EhdrReader.e_ident[4] != 2 || EhdrReader.e_ident[5] != (IsBigEndian + 1)) {
+	if (Ehdr.e_ident[4] != FOR_64BIT || Ehdr.e_ident[5] != LITTLE_ENDIAN) {
 		Status = EFI_UNSUPPORTED;
 		goto rollback_out;
 	}
 
-	if (EhdrReader.e_phentsize != EphdrSize) {
+	if (Ehdr.e_type != EXEC) {
+		Status = EFI_UNSUPPORTED;
+		goto rollback_out;
+	}
+
+	if (Ehdr.e_machine != AARCH64) {
+		Status = EFI_UNSUPPORTED;
+		goto rollback_out;
+	}
+
+	if (Ehdr.e_phentsize != EphdrSize) {
 		Status = EFI_UNSUPPORTED;
 		goto rollback_out;
 	}

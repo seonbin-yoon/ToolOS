@@ -54,8 +54,7 @@ EFI_STATUS
 
 EFI_STATUS
 (ValidationKernelFile)(
-	EFI_FILE_PROTOCOL *File,
-	BOOLEAN IsBigEndian
+	EFI_FILE_PROTOCOL *File
 );
 
 EFI_STATUS

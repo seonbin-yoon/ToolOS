@@ -8,8 +8,8 @@
 #include <main.h>
 
 EFI_STATUS GetMemoryInfo(TOOLOS_BOOTINFO_TABLE* BootInfo) {
-	static EFI_MEMORY_DESCRIPTOR *MemoryMap = NULL;
-	static VOID *InfoMemoryMap = NULL;
+	STATIC EFI_MEMORY_DESCRIPTOR *MemoryMap = NULL;
+	STATIC VOID *InfoMemoryMap = NULL;
 	
 	EFI_STATUS Status;
 

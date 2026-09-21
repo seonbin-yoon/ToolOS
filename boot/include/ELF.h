@@ -10,8 +10,12 @@
 
 #include <Uefi.h>
 
-#define ELF_MAGIC_NUM 0x464C457F
-#define PT_LOAD 1
+#define ELF_MAGIC_NUM_LEN 4
+#define FOR_64BIT 0x2
+#define LITTLE_ENDIAN 0x01
+#define EXEC    0x2
+#define AARCH64 0xB7
+#define PT_LOAD 0x1
 
 #pragma pack(1)
 
