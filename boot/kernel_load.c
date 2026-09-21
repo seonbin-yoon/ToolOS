@@ -135,7 +135,7 @@ EFI_STATUS GetKernelFileSize(EFI_FILE_PROTOCOL *File, UINT64 *SizeBuffer) {
 
 	TotalPhdrSize = EhdrReader.e_phnum * EhdrReader.e_phentsize;
 	Status = gBS->AllocatePool(
-		EfiLoaderData,
+		EfiLoaderCode,
 		TotalPhdrSize,
 		&TotalPhdr
 	);
@@ -207,7 +207,7 @@ EFI_STATUS LoadKernelFile(TOOLOS_BOOTINFO_TABLE *BootInfo, EFI_FILE_PROTOCOL *Fi
 
 	Status = gBS->AllocatePages(
 		AllocateAddress,
-		EfiLoaderData,
+		EfiLoaderCode,
 		NeedPages,	
 		&KernelAddress
 	);
