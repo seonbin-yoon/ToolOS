@@ -32,14 +32,22 @@ cp global.cfg.example global.cfg
 ```
 **`global.cfg` serves as the single source of truth for build automation. Inspect the comments inside and adjust the configuration to match your environment.**
 
-### 4. Build ToolOS
+### 4. Set Up EDK II Build Settings
+Copy the example configuration files in the `boot/edk2_settings` directory to create `ToolOS.dsc` and `ToolOS.inf`:
+```bash
+cp boot/edk2_settings/ToolOS.dsc.example boot/edk2_settings/ToolOS.dsc
+cp boot/edk2_settings/ToolOS.inf.example boot/edk2_settings/ToolOS.inf
+```
+If you are using `build.sh`, you will not need to make any manual changes to the contents of these files.
+
+### 5. Build ToolOS
 Run the build script with the `b` (bootloader) and `kb` (kernel build) arguments:
 ```bash
 ./scripts/build.sh b kb
 ```
-This builds the bootloader and kernel sequentially. These options automatically copy the built bootloader and kernel files into the `hda-contents` directory—designated as the QEMU mount directory based on the `QEMU_WORKSPACE` path defined in `global.cfg`—mirroring the actual disk layout.
+This builds the bootloader and kernel sequentially. The built binaries are automatically placed into the hda-contents directory under your configured QEMU_WORKSPACE (defined in global.cfg), structuring the actual disk layout for QEMU.
 
-### 5. Run with QEMU (Debug Mode)
+### 6. Run with QEMU (Debug Mode)
 Once `ToolOS.img` is generated, launch the emulator:
 ```bash
 ./scripts/build.sh q
