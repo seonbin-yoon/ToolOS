@@ -1,0 +1,292 @@
+/*
+ * SPDX-License-Identifier: GPL-2.0-only
+ *
+ * Copyright (c) 2026 Seonbin Yoon
+*/
+
+#include <main.h>
+
+EFI_STATUS OpenKernelFile(EFI_HANDLE ImageHandle, CHAR16 *KernelFileName, EFI_FILE_PROTOCOL **KernelFile) {
+	EFI_STATUS Status;
+	EFI_LOADED_IMAGE *BootLoaderInfo = NULL;
+	EFI_SIMPLE_FILE_SYSTEM_PROTOCOL *FileSystem = NULL;
+	EFI_FILE_PROTOCOL *Root = NULL;
+
+	if (!ImageHandle || !KernelFileName || !KernelFile) {
+		Status = EFI_INVALID_PARAMETER;
+		goto out;
+	}
+
+	Status = gBS->HandleProtocol(
+		ImageHandle,
+		&gEfiLoadedImageProtocolGuid,
+		(VOID **)&BootLoaderInfo
+	);
+	if (EFI_ERROR(Status))
+		goto out;
+
+	Status = gBS->HandleProtocol(
+		BootLoaderInfo->DeviceHandle,
+		&gEfiSimpleFileSystemProtocolGuid,
+		(VOID **)&FileSystem
+	);
+	if (EFI_ERROR(Status))
+		goto out;
+
+	Status = FileSystem->OpenVolume(
+		FileSystem,
+		&Root
+	);
+	if (EFI_ERROR(Status))
+		goto out_close_root;
+
+	Status = Root->Open(
+		Root,
+		KernelFile,
+		KernelFileName,
+		EFI_FILE_MODE_READ,
+		0
+	);
+
+out_close_root:
+	if (Root)
+		Root->Close(Root);
+out:
+	return Status;
+}
+
+EFI_STATUS ValidationKernelFile(EFI_FILE_PROTOCOL *File) {
+	EFI_STATUS Status;
+	ELFHeader Ehdr;
+	UINTN EhdrSize = sizeof(ELFHeader);
+	UINTN EphdrSize = sizeof(ELFProgramHeader);
+	CHAR8 elf_magic_num[ELF_MAGIC_NUM_LEN] = {0x7f, 'E', 'L', 'F'};
+
+	if (!File) {
+		Status = EFI_INVALID_PARAMETER;
+		goto out;
+	}
+
+	Status = File->Read(
+		File,
+		&EhdrSize,
+		&Ehdr
+	);
+	if (EFI_ERROR(Status))
+		goto rollback_out;
+
+	if (CompareMem(Ehdr.e_ident, &elf_magic_num, ELF_MAGIC_NUM_LEN)) {
+		Status = EFI_UNSUPPORTED;
+		goto rollback_out;
+	}
+
+	if (Ehdr.e_ident[4] != FOR_64BIT || Ehdr.e_ident[5] != LITTLE_ENDIAN) {
+		Status = EFI_UNSUPPORTED;
+		goto rollback_out;
+	}
+
+	if (Ehdr.e_type != EXEC) {
+		Status = EFI_UNSUPPORTED;
+		goto rollback_out;
+	}
+
+	if (Ehdr.e_machine != AARCH64) {
+		Status = EFI_UNSUPPORTED;
+		goto rollback_out;
+	}
+
+	if (Ehdr.e_phentsize != EphdrSize) {
+		Status = EFI_UNSUPPORTED;
+		goto rollback_out;
+	}
+
+rollback_out:
+	File->SetPosition(File, 0);
+out:
+	return Status;
+}
+
+EFI_STATUS GetKernelFileSize(EFI_FILE_PROTOCOL *File, UINT64 *SizeBuffer) {
+	EFI_STATUS Status;
+	
+	ELFHeader EhdrReader;
+	ELFProgramHeader *EphdrReader = NULL;
+
+	UINTN EhdrSize = sizeof(ELFHeader);
+	VOID *TotalPhdr = NULL;
+	UINTN TotalPhdrSize = 0;
+
+	UINT64 MinSegAddr = -1;
+	UINT64 MaxSegAddr = 0;
+
+	if (!File || !SizeBuffer) {
+		Status = EFI_INVALID_PARAMETER;
+		goto out;
+	}
+
+	Status = File->Read(
+		File,
+		&EhdrSize,
+		&EhdrReader
+	);
+	if (EFI_ERROR(Status))
+		goto rollback_out;
+
+	TotalPhdrSize = EhdrReader.e_phnum * EhdrReader.e_phentsize;
+	Status = gBS->AllocatePool(
+		EfiLoaderCode,
+		TotalPhdrSize,
+		&TotalPhdr
+	);
+	if (EFI_ERROR(Status))
+		goto rollback_out;
+
+	Status = File->SetPosition(
+		File,
+		EhdrReader.e_phoff
+	);
+	if (EFI_ERROR(Status))
+		goto free_phdrbuffer_out;
+
+	Status = File->Read(
+		File,
+		&TotalPhdrSize,
+		TotalPhdr
+	);
+	if (EFI_ERROR(Status))
+		goto free_phdrbuffer_out;
+
+	EphdrReader = TotalPhdr;
+	for (UINT64 i = 0; i < EhdrReader.e_phnum; i++) {
+		if (EphdrReader[i].p_type == PT_LOAD) {
+			if (EphdrReader[i].p_vaddr < MinSegAddr)
+				MinSegAddr = EphdrReader[i].p_vaddr;
+			if ((EphdrReader[i].p_vaddr + EphdrReader[i].p_memsz) > MaxSegAddr)
+				MaxSegAddr = EphdrReader[i].p_vaddr + EphdrReader[i].p_memsz;
+		}
+	}
+
+	if (MaxSegAddr < MinSegAddr) {
+		Status = EFI_LOAD_ERROR;
+		goto free_phdrbuffer_out;
+	}
+
+	*SizeBuffer = MaxSegAddr - MinSegAddr;
+
+free_phdrbuffer_out:
+	gBS->FreePool(TotalPhdr);
+rollback_out:
+	File->SetPosition(File, 0);
+out:
+	return Status;
+}
+
+EFI_STATUS LoadKernelFile(TOOLOS_BOOTINFO_TABLE *BootInfo, EFI_FILE_PROTOCOL *File, EFI_PHYSICAL_ADDRESS LoadAddress, UINT64 MemSize) {
+	EFI_STATUS Status;
+	UINT64 NeedPages = 0;
+	UINT64 NeedSize = 0;
+	EFI_PHYSICAL_ADDRESS KernelAddress = LoadAddress;
+
+	UINTN EhdrSize = sizeof(ELFHeader);
+	ELFHeader EhdrReader;
+	ELFProgramHeader *EphdrReader = NULL;
+	VOID *TotalPhdr = NULL;
+	UINTN TotalPhdrSize = 0;
+
+	UINT64 MinSegAddr = MAX_UINT64;
+	UINT64 ReadOffset = 0;
+
+	if (!File || !LoadAddress || !MemSize) {
+		Status = EFI_INVALID_PARAMETER;
+		goto out;
+	}
+	
+	NeedPages = EFI_SIZE_TO_PAGES(MemSize);
+	NeedSize = NeedPages * EFI_PAGE_SIZE;
+
+	Status = gBS->AllocatePages(
+		AllocateAddress,
+		EfiLoaderCode,
+		NeedPages,	
+		&KernelAddress
+	);
+	if (EFI_ERROR(Status))
+		goto out;
+
+	gBS->SetMem(
+		(VOID *)KernelAddress,
+		NeedSize,
+		0
+	);
+
+	Status = File->Read(
+		File,
+		&EhdrSize,
+		&EhdrReader
+	);
+	if (EFI_ERROR(Status))
+		goto out;
+
+	TotalPhdrSize = EhdrReader.e_phentsize * EhdrReader.e_phnum;
+	Status = gBS->AllocatePool(
+		EfiLoaderData,
+		TotalPhdrSize,
+		&TotalPhdr
+	);
+	if (EFI_ERROR(Status))
+		goto rollback_out;
+
+	Status = File->SetPosition(
+		File,
+		EhdrReader.e_phoff
+	);
+	if (EFI_ERROR(Status))
+		goto free_phdrbuffer_out;
+
+	Status = File->Read(
+		File,
+		&TotalPhdrSize,
+		TotalPhdr
+	);
+	if (EFI_ERROR(Status))
+		goto free_phdrbuffer_out;
+
+	EphdrReader = (ELFProgramHeader *)TotalPhdr;
+	for (UINT64 i = 0; i < EhdrReader.e_phnum; i++) {
+		if (EphdrReader[i].p_type == PT_LOAD) {
+			if (EphdrReader[i].p_vaddr < MinSegAddr)
+				MinSegAddr = EphdrReader[i].p_vaddr;
+		}
+	}
+
+	for (UINT64 i = 0; i < EhdrReader.e_phnum; i++) {
+		if (EphdrReader[i].p_type == PT_LOAD) {
+			Status = File->SetPosition(
+				File,
+				EphdrReader[i].p_offset
+			);
+			if (EFI_ERROR(Status))
+				goto free_phdrbuffer_out;
+
+			ReadOffset = KernelAddress + EphdrReader[i].p_vaddr - MinSegAddr;
+
+			Status = File->Read(
+				File,
+				&EphdrReader[i].p_filesz,
+				(VOID *)ReadOffset
+			);
+			if (EFI_ERROR(Status))
+				goto free_phdrbuffer_out;
+		}
+	}
+
+	BootInfo->KernelStartAddress = KernelAddress + (EhdrReader.e_entry - MinSegAddr);
+
+free_phdrbuffer_out:
+	gBS->FreePool(TotalPhdr);
+rollback_out:
+	File->SetPosition(File, 0);
+out:
+	return Status;
+}
+
