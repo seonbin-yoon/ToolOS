@@ -1,13 +1,34 @@
+# ==============================================================================
+# NOTICE:
+# It is strongly recommended NOT to change these paths once configured.
+# If you must change them, follow the guidelines below:
+#
+# CAUTION:
+# Do NOT run the setup script again after changing paths unless you
+# clearly understand what the automated development environment setup script does. (auto-setup-tde)
+#
+# If you change EDK2_SRC:
+#   1. Move the existing edk2 directory using the `mv` command.
+#   2. In your ~/.bashrc, update the paths in the following two lines to the new path:
+#        export EDK_TOOLS_PATH=<EDK2_SRC>/BaseTools
+#        pushd <EDK2_SRC> > /dev/null
+#
+# If you change QEMU_WORKSPACE:
+#   1. Move the existing qemu directory using the `mv` command.
+# ==============================================================================
+
+[path]
+OS_SRC=~/ToolOS # Must be the source tree path
+# Options for the tde setup program
+QEMU_WORKSPACE=~/qemu
+EDK2_SRC=~/edk2
+
+# ===== Settings Can Change at Any Time ======
+
 [global]
 # Max Value: Number of logical cores on the computer
 # If it's not a number, it will be overwritten with the maximum number of logical cores.
 BUILD_THREADS=auto
-
-[path]
-OS_SRC=~/ToolOS
-# Options for the tde setup program
-QEMU_WORKSPACE=~/qemu
-EDK2_SRC=~/edk2
 
 [qemu]
 QEMU_MEM=2G
