@@ -1,0 +1,10 @@
+.vscode/
+build/
+test/
+
+boot/edk2_settings/ToolOS.dsc
+boot/edk2_settings/ToolOS.inf
+
+global.cfg
+compile_commands.json
+ToolOS.elf

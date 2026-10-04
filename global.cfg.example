@@ -1,0 +1,14 @@
+[global]
+# Max Value: Number of logical cores on the computer
+# If it's not a number, it will be overwritten with the maximum number of logical cores.
+BUILD_THREADS=auto
+
+[path]
+OS_SRC=~/ToolOS
+# Options for the tde setup program
+QEMU_WORKSPACE=~/qemu
+EDK2_SRC=~/edk2
+
+[qemu]
+QEMU_MEM=2G
+QEMU_CPU_CORE=1
