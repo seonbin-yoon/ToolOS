@@ -63,8 +63,6 @@ EFI_STATUS EFIAPI UefiMain(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable
 		CPU_HALT;
 	}
 
-	BootInfo->SafeWritten = TRUE;
-
 	Status = gBS->ExitBootServices(
 		ImageHandle,
 		BootInfo->MemoryMapInfo.MapKey
