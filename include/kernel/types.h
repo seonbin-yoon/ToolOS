@@ -8,10 +8,15 @@
 #define TYPES_H
 
 #if defined(__x86_64__) || defined(__aarch64__)
-    typedef long long size64;
-    typedef int       size32;
-    typedef short     size16;
-    typedef char      size8;
+    typedef long long s64;
+    typedef int       s32;
+    typedef short     s16;
+    typedef char      s8;
+
+    typedef unsigned long long u64;
+    typedef unsigned int       u32;
+    typedef unsigned short     u16;
+    typedef unsigned char      u8;
 #endif
 
 #endif
