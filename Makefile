@@ -5,14 +5,11 @@
 #
 
 CC = clang
-ASM = clang
+AS = clang
 LD = ld.lld
 
 KERNEL = kernel
-LDSCRIPT = $(KERNEL)/kernel.ld
-
-INCLUDE = include/kernel
-INCLUDE += include/boot
+INCLUDE = $(addprefix -I, include/kernel include/boot)
 
 TMP = build
 
@@ -24,8 +21,8 @@ RM = rm -rf
 ASMFLAGS = --target=aarch64-none-elf -g -MMD -MP
 CFLAGS = --target=aarch64-none-elf -g -O2 -Wall -Werror -ffreestanding \
 		-finline-functions -fno-stack-protector -nostdlibinc -std=$(C_STD) \
-		-I $(INCLUDE) -MMD -MP
-LDFLAGS = -m aarch64elf -T $(LDSCRIPT) \
+		$(INCLUDE) -MMD -MP
+LDFLAGS = -m aarch64elf -T $(KERNEL)/kernel.ld \
 		-static -nostdlib -z max-page-size=4096 \
 		--defsym __BUILD_DATE=$(shell date +'%Y%m%d') \
 		--defsym __BUILD_TIME=$(shell date +'%H%M%S')
@@ -44,12 +41,12 @@ $(TMP):
 	@mkdir -p $@
 
 $(TMP)/%.o: $(KERNEL)/%.c | $(TMP)
-	@echo [CC] $@
-	@$(CC) $(CFLAGS) -c $< -o $@
+	echo "[CC] $< : $@"
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(TMP)/%.o: $(KERNEL)/%.S | $(TMP)
-	@echo [ASM] $@
-	@$(ASM) $(ASMFLAGS) -c $< -o $@
+	@echo "[AS] $< : $@"
+	@$(AS) $(ASMFLAGS) -c $< -o $@
 
 clean:
 	$(RM) $(NAME).elf $(TMP)
