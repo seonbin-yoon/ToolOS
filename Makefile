@@ -41,8 +41,8 @@ $(TMP):
 	@mkdir -p $@
 
 $(TMP)/%.o: $(KERNEL)/%.c | $(TMP)
-	echo "[CC] $< : $@"
-	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "[CC] $< : $@"
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(TMP)/%.o: $(KERNEL)/%.S | $(TMP)
 	@echo "[AS] $< : $@"
