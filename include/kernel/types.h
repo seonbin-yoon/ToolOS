@@ -17,6 +17,8 @@
     typedef unsigned int       u32;
     typedef unsigned short     u16;
     typedef unsigned char      u8;
+#else
+    #error "ToolOS only supports 64-bit architectures of compile environment (aarch64 || x86_64)."
 #endif
 
 #endif
