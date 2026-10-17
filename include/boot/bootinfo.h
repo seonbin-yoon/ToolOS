@@ -67,6 +67,8 @@
 		TOOLOS_GRAPHICS_MAP   GraphicsMap;
 		ACPI_RSDP_TABLE       *RSDPTable;
 	} TOOLOS_BOOTINFO_TABLE;
+#else
+    #error "ToolOS only supports 64-bit architectures of compile envrionment (aarch64 || x86_64)."
 #endif
 
 #pragma pack()
