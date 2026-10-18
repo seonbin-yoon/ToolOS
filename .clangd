@@ -1,4 +1,6 @@
 CompileFlags:
   Add: 
-    - "-std=c23"
-    - "-xc-header"
+    [-std=c23, -xc-header]
+
+Completion:
+  HeaderInsertion: Never
